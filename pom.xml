@@ -30,13 +30,6 @@
         <version>1.2</version>
     </parent>
 
-    <scm>
-        <url>https://github.com/wso2/carbon-identity-framework.git</url>
-        <developerConnection>scm:git:https://github.com/wso2/carbon-identity-framework.git</developerConnection>
-        <connection>scm:git:https://github.com/wso2/carbon-identity-framework.git</connection>
-        <tag>v5.14.97</tag>
-    </scm>
-
     <modules>
         <module>test-utils/org.wso2.carbon.identity.testutil</module>
         <module>service-stubs/identity</module>
@@ -1872,8 +1865,6 @@
         <maven.compiler.plugin.version>3.8.0</maven.compiler.plugin.version>
         <swagger2cxf-maven-plugin.version>1.0-SNAPSHOT</swagger2cxf-maven-plugin.version>
 
-        <project.scm.id>my-scm-server</project.scm.id>
-
         <jersey-version>1.19.1</jersey-version>
 
         <!-- Pax Logging Version -->
@@ -1949,18 +1940,6 @@
         </pluginManagement>
 
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <configuration>
-                    <preparationGoals>clean install</preparationGoals>
-                    <autoVersionSubmodules>true</autoVersionSubmodules>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
