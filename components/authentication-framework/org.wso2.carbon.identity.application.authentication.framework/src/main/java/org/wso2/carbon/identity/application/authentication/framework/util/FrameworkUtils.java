@@ -104,6 +104,7 @@ import org.wso2.carbon.idp.mgt.IdentityProviderManager;
 import org.wso2.carbon.idp.mgt.IdpManager;
 import org.wso2.carbon.idp.mgt.util.IdPManagementUtil;
 import org.wso2.carbon.user.api.UserStoreException;
+import org.wso2.carbon.user.core.UserCoreConstants;
 import org.wso2.carbon.user.core.config.UserStorePreferenceOrderSupplier;
 import org.wso2.carbon.user.core.util.UserCoreUtil;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
@@ -139,6 +140,8 @@ import javax.servlet.http.HttpServletResponse;
 import static org.wso2.carbon.identity.application.authentication.framework.util.FrameworkConstants.Config.USER_SESSION_MAPPING_ENABLED;
 import static org.wso2.carbon.identity.application.authentication.framework.util.FrameworkConstants.REQUEST_PARAM_SP;
 import static org.wso2.carbon.identity.application.authentication.framework.util.FrameworkConstants.RequestParams.TENANT_DOMAIN;
+import static org.wso2.carbon.identity.application.authentication.framework.util.FrameworkConstants.InternalRoleDomains.APPLICATION_DOMAIN;
+import static org.wso2.carbon.identity.application.authentication.framework.util.FrameworkConstants.InternalRoleDomains.WORKFLOW_DOMAIN;
 
 public class FrameworkUtils {
 
@@ -2232,5 +2235,25 @@ public class FrameworkUtils {
         }
         return false;
     }
-}
 
+    /**
+     * Remove domain name from roles except the hybrid roles (Internal,Application & Workflow).
+     *
+     * @param domainAwareRoleList list of roles assigned to a user.
+     * @return String of multi attribute separated list of roles assigned to a user with domain name removed from roles.
+     */
+    public static String removeDomainFromNamesExcludeHybrid(List<String> domainAwareRoleList) {
+
+        List<String> roleList = new ArrayList<String>();
+        for (String role : domainAwareRoleList) {
+            String userStoreDomain = IdentityUtil.extractDomainFromName(role);
+            if (UserCoreConstants.INTERNAL_DOMAIN.equalsIgnoreCase(userStoreDomain) || APPLICATION_DOMAIN
+                    .equalsIgnoreCase(userStoreDomain) || WORKFLOW_DOMAIN.equalsIgnoreCase(userStoreDomain)) {
+                roleList.add(role);
+            } else {
+                roleList.add(UserCoreUtil.removeDomainFromName(role));
+            }
+        }
+        return String.join(FrameworkUtils.getMultiAttributeSeparator(), roleList);
+    }
+}
