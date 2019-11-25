@@ -116,6 +116,8 @@ public interface ApplicationMgtListener {
      * @param userName        userName of the user who created the Service Provider.
      * @return whether the postDelete action is complete.
      * @throws IdentityApplicationManagementException
+     * @deprecated As of release v5.14.97, replaced by
+     * {@link #doPostDeleteApplication(ServiceProvider, String, String)} ()}
      */
     @Deprecated
     boolean doPostDeleteApplication(String applicationName, String tenantDomain, String userName)
