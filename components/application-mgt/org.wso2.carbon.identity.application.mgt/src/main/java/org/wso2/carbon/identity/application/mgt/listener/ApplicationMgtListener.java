@@ -127,7 +127,7 @@ public interface ApplicationMgtListener {
      * if doPostDeleteApplication(String applicationName, String tenantDomain, String userName)
      * is overridden.
      *
-     * @param serviceProvider created Service Provider object.
+     * @param serviceProvider Deleted Service Provider object.
      * @param tenantDomain    tenant domain of the user who created the Service Provider.
      * @param userName        userName of the user who created the Service Provider.
      * @return whether the postDelete action is complete.
