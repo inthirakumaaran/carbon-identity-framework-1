@@ -1942,8 +1942,8 @@ public class ApplicationDAOImpl extends AbstractApplicationDAOImpl implements Pa
                 getAppNamesStmt = connection.prepareStatement(sqlQuery);
                 getAppNamesStmt.setInt(1, tenantID);
                 getAppNamesStmt.setString(2, filterResolvedForSQL);
-                getAppNamesStmt.setInt(3, limit);
-                getAppNamesStmt.setInt(4, offset);
+                getAppNamesStmt.setInt(3, offset + 1);
+                getAppNamesStmt.setInt(4, offset + limit);
             } else if (databaseProductName.contains("INFORMIX")) {
                 sqlQuery = ApplicationMgtDBQueries.LOAD_APP_NAMES_BY_TENANT_AND_APP_NAME_INFORMIX;
                 getAppNamesStmt = connection.prepareStatement(sqlQuery);
@@ -3311,8 +3311,8 @@ public class ApplicationDAOImpl extends AbstractApplicationDAOImpl implements Pa
                 sqlQuery = ApplicationMgtDBQueries.LOAD_APP_NAMES_BY_TENANT_DB2SQL;
                 getAppNamesStmt = connection.prepareStatement(sqlQuery);
                 getAppNamesStmt.setInt(1, tenantID);
-                getAppNamesStmt.setInt(2, limit);
-                getAppNamesStmt.setInt(3, offset);
+                getAppNamesStmt.setInt(2, offset + 1);
+                getAppNamesStmt.setInt(3, offset + limit);
             } else if (databaseProductName.contains("INFORMIX")) {
                 sqlQuery = ApplicationMgtDBQueries.LOAD_APP_NAMES_BY_TENANT_INFORMIX;
                 getAppNamesStmt = connection.prepareStatement(sqlQuery);
