@@ -25,6 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.CarbonConstants;
 import org.wso2.carbon.context.CarbonContext;
+import org.wso2.carbon.identity.base.IdentityConstants;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.registry.api.Registry;
 import org.wso2.carbon.registry.api.RegistryException;
@@ -117,15 +118,19 @@ public class UserRealmProxy {
                     flaggedNames[i] = new FlaggedName();
                     flaggedNames[i].setItemName(user);
                     //retrieving the displayName
-                    String displayName = realm.getUserStoreManager().getUserClaimValue(user, DISAPLAY_NAME_CLAIM, null);
                     int index = user.indexOf(UserCoreConstants.DOMAIN_SEPARATOR);
-                    if (index > 0) {
-                        if (displayName != null) {
-                            if (index > 0) {
-                                flaggedNames[i].setItemDisplayName(user.substring(0, index + 1) + displayName);
-                            } else {
-                                flaggedNames[i].setItemDisplayName(displayName);
-                            }
+                    // Check whether to use the display name claim when filtering users.
+                    String showDisplayName = IdentityUtil.getProperty(IdentityConstants.SHOW_DISPLAY_NAME);
+                    boolean isShowDisplayNameEnabled = true;
+                    if (StringUtils.isNotEmpty(showDisplayName)) {
+                        isShowDisplayNameEnabled = Boolean.parseBoolean(showDisplayName);
+                    }
+                    if (isShowDisplayNameEnabled && index > 0) {
+                        String displayName = realm.getUserStoreManager().getUserClaimValue(user, DISAPLAY_NAME_CLAIM, null);
+                        if (StringUtils.isNotEmpty(displayName)) {
+                            flaggedNames[i].setItemDisplayName(user.substring(0, index + 1) + displayName);
+                        } else {
+                            flaggedNames[i].setItemDisplayName(user);
                         }
                     } else {
                         flaggedNames[i].setItemDisplayName(user);
