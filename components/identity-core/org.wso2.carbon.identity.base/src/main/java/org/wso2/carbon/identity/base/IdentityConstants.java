@@ -142,6 +142,9 @@ public class IdentityConstants {
     public static final String SKIP_CONSENT_DISPLAY_NAME="Skip Consent";
     public static final String SKIP_CONSENT="skipConsent";
 
+    // Use display name of a user when filtering users.
+    public static final String SHOW_DISPLAY_NAME = "UserFiltering.ShowDisplayName";
+
     private IdentityConstants() {
     }
 
