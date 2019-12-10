@@ -100,7 +100,6 @@
     String spEntityId = null;
     String nameIdFormat = null;
     String ssoUrl = null;
-    String acsUrl = null;
     boolean isAuthnRequestSigned = false;
     boolean isEnableAssertionEncription = false;
     boolean isEnableAssertionSigning = false;
@@ -498,11 +497,6 @@
                             IdentityApplicationConstants.Authenticator.SAML2SSO.SSO_URL);
                     if (spEntityIdProp != null) {
                         ssoUrl = ssoUrlProp.getValue();
-                    }
-                    Property acsUrlProp = IdPManagementUIUtil.getProperty(fedAuthnConfig.getProperties(),
-                            IdentityApplicationConstants.Authenticator.SAML2SSO.ACS_URL);
-                    if (spEntityIdProp != null) {
-                        acsUrl = acsUrlProp.getValue();
                     }
                     Property isAuthnRequestSignedProp = IdPManagementUIUtil.getProperty(fedAuthnConfig.getProperties(),
                             IdentityApplicationConstants.Authenticator.SAML2SSO.IS_AUTHN_REQ_SIGNED);
@@ -1031,11 +1025,6 @@
     if (StringUtils.isBlank(ssoUrl)) {
         ssoUrl = StringUtils.EMPTY;
     }
-
-    if (StringUtils.isBlank(acsUrl)) {
-        acsUrl = StringUtils.EMPTY;
-    }
-
     String authnRequestSignedChecked = "";
     if (identityProvider != null) {
         if (isAuthnRequestSigned) {
@@ -4021,16 +4010,6 @@
 
                                         <div class="sectionHelp">
                                             <fmt:message key='sso.url.help'/>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="leftCol-med labelField"><fmt:message key='acs.url'/>:</td>
-                                    <td>
-                                        <input id="acsUrl" name="acsUrl" type="text"
-                                        value=<%=Encode.forHtmlAttribute(acsUrl)%>>
-                                        <div class="sectionHelp">
-                                            <fmt:message key='acs.url.help'/>
                                         </div>
                                     </td>
                                 </tr>
