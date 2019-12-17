@@ -2178,6 +2178,30 @@ public class FrameworkUtils {
     }
 
     /**
+     * Check whether skip logout consent page or not.
+     *
+     * @param serviceProvider Service provider.
+     * @return true/false Skip the logout consent page or not.
+     */
+    public static boolean isLogoutConsentPageSkippedForSP(ServiceProvider serviceProvider) {
+
+        if (serviceProvider == null) {
+            throw new IllegalArgumentException("A null reference received for service provider.");
+        }
+        for (ServiceProviderProperty serviceProviderProperty : serviceProvider.getSpProperties()) {
+            if (IdentityConstants.SKIP_LOGOUT_CONSENT.equals(serviceProviderProperty.getName())
+                    && Boolean.parseBoolean(serviceProviderProperty.getValue())) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Logout consent page skip property set for service provider : " + serviceProvider
+                            .getApplicationName());
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Check whether the specified column of the specified table exists in the Identity database.
      *
      * @param tableName name of the table.
