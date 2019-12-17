@@ -3966,30 +3966,7 @@
                             </table>
                         </div>
                         <div id="saml_mode_selction_section">
-                            <table class="carbonFormTable" width="100%">
-
-                                <tbody>
-                                <tr>
-                                    <td class="leftCol-med labelField"><fmt:message key='saml.sso.select.mode'/><span
-                                            ></span></td>
-                                    <td>
-                                        <input type="radio" checked="checked" name="saml_ui_mode"  value="manual"
-                                               onclick="
-                                        $('#manual_section').show(); $('#metadata_section').hide();">
-                                        <fmt:message key='saml.mode.manual'/>
-
-
-                                        <input type="radio" name="saml_ui_mode" value="file" onclick="
-                                    $('#manual_section').hide(); $('#metadata_section').show();">
-                                        <fmt:message key='saml.mode.file'/>
-
-                                        <div class="sectionHelp">
-                                            <fmt:message key='help.metadata.select.mode'/>
-                                        </div>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                            <jsp:include page="saml-select-mode.jsp"></jsp:include>
                         </div>
 
 
