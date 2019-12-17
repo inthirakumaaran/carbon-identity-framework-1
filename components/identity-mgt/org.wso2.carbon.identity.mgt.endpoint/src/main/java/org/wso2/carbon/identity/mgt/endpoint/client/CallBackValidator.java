@@ -18,20 +18,22 @@
 
 package org.wso2.carbon.identity.mgt.endpoint.client;
 
+import org.apache.axis2.AxisFault;
+import org.apache.axis2.client.ServiceClient;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 import org.wso2.carbon.base.MultitenantConstants;
-import org.wso2.carbon.identity.application.common.model.IdentityProvider;
-import org.wso2.carbon.identity.application.common.model.IdentityProviderProperty;
+import org.wso2.carbon.identity.application.common.model.idp.xsd.IdentityProvider;
+import org.wso2.carbon.identity.application.common.model.idp.xsd.IdentityProviderProperty;
 import org.wso2.carbon.identity.mgt.endpoint.IdentityManagementEndpointConstants;
-import org.wso2.carbon.idp.mgt.IdentityProviderManagementException;
-import org.wso2.carbon.idp.mgt.IdentityProviderManager;
+import org.wso2.carbon.identity.mgt.endpoint.util.Utils;
+import org.wso2.carbon.idp.mgt.stub.IdentityProviderMgtServiceStub;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 /**
@@ -40,6 +42,7 @@ import java.net.URLEncoder;
 public class CallBackValidator {
 
     private static final Log log = LogFactory.getLog(CallBackValidator.class);
+    private IdentityProviderMgtServiceStub idPMgtStub;
 
     /**
      * This method is to validate the callback URL in the request with the configured one.
@@ -66,17 +69,21 @@ public class CallBackValidator {
             }
         }
 
-        IdentityProvider residentIdP;
+        IdentityProvider residentIdp;
         try {
-            residentIdP = IdentityProviderManager.getInstance().getResidentIdP(tenantDomain);
-        } catch (IdentityProviderManagementException e) {
-            throw new IdentityRecoveryException("Error occurred while reading the resident IdP for the tenant domain : "
-                    + tenantDomain, e);
+            idPMgtStub = new IdentityProviderMgtServiceStub();
+            ServiceClient idpClient = idPMgtStub._getServiceClient();
+            Utils.authenticate(idpClient);
+            residentIdp = idPMgtStub.getResidentIdP();
+        } catch (AxisFault axisFault) {
+            throw new IdentityRecoveryException("Error while instantiating IdentityProviderMgtServiceStub", axisFault);
+        } catch (Exception e) {
+            throw new IdentityRecoveryException("Error occurred when getting residentIDP configurations.", e);
         }
 
         IdentityProviderProperty[] idpProperties = null;
-        if (residentIdP != null) {
-            idpProperties = residentIdP.getIdpProperties();
+        if (residentIdp != null) {
+            idpProperties = residentIdp.getIdpProperties();
         } else {
             if (log.isDebugEnabled()) {
                 log.debug("Resident identity provider is not found for the tenant domain: " + tenantDomain);
