@@ -1082,6 +1082,7 @@ public class ApplicationBean {
 
         String jwks = request.getParameter(ApplicationMgtUIConstants.JWKS_URI);
         boolean skipConsent = Boolean.parseBoolean(request.getParameter(IdentityConstants.SKIP_CONSENT));
+        boolean skipLogoutConsent = Boolean.parseBoolean(request.getParameter(IdentityConstants.SKIP_LOGOUT_CONSENT));
 
         final Map<String, ServiceProviderProperty> configNameValueMap =
                 getServiceProviderProperties().stream().collect(Collectors.toMap(ServiceProviderProperty::getName, spProperty -> spProperty));
@@ -1119,6 +1120,17 @@ public class ApplicationBean {
             propertyForSkipConsent.setValue(Boolean.toString(skipConsent));
 
             configNameValueMap.put(propertyForSkipConsent.getName(), propertyForSkipConsent);
+        }
+
+        // Handling logout consent page skip property.
+        if (configNameValueMap.containsKey(IdentityConstants.SKIP_LOGOUT_CONSENT)) {
+            configNameValueMap.get(IdentityConstants.SKIP_LOGOUT_CONSENT).setValue(Boolean.toString(skipLogoutConsent));
+        } else {
+            ServiceProviderProperty propertyForSkipLogoutConsent = new ServiceProviderProperty();
+            propertyForSkipLogoutConsent.setDisplayName(IdentityConstants.SKIP_LOGOUT_CONSENT_DISPLAY_NAME);
+            propertyForSkipLogoutConsent.setName(IdentityConstants.SKIP_LOGOUT_CONSENT);
+            propertyForSkipLogoutConsent.setValue(Boolean.toString(skipLogoutConsent));
+            configNameValueMap.put(propertyForSkipLogoutConsent.getName(), propertyForSkipLogoutConsent);
         }
 
         serviceProvider.setSpProperties(configNameValueMap.values().toArray(new ServiceProviderProperty[]{}));

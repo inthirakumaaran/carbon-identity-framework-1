@@ -43,6 +43,7 @@
 <%@ page import="java.util.HashMap" %>
 <%@ page import="java.util.ArrayList" %>
 <jsp:directive.include file="localize.jsp"/>
+<jsp:directive.include file="init-url.jsp"/>
 
 <%
     boolean error = IdentityManagementEndpointUtil.getBooleanValue(request.getAttribute("error"));
@@ -150,7 +151,7 @@
     List<Claim> claimsList;
     UsernameRecoveryApi usernameRecoveryApi = new UsernameRecoveryApi();
     try {
-        claimsList = usernameRecoveryApi.claimsGet(user.getTenantDomain(), false);
+        claimsList = usernameRecoveryApi.claimsGet(user.getTenantDomain(), true);
         uniquePIIs = IdentityManagementEndpointUtil.fillPiisWithClaimInfo(uniquePIIs, claimsList);
         if (uniquePIIs != null) {
             claims = uniquePIIs.values().toArray(new Claim[0]);
@@ -224,7 +225,7 @@
             <!-- content -->
             <div class="col-xs-12 col-sm-10 col-md-8 col-lg-5 col-centered wr-login">
                 <% if(skipSignUpEnableCheck) { %>
-                    <form action="../commonauth" method="post" id="register">
+                    <form action=<%=commonauthURL%> method="post" id="register">
                 <% } else { %>
                     <form action="processregistration.do" method="post" id="register">
                 <% } %>

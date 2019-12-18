@@ -39,6 +39,7 @@
 <%@ page import="org.wso2.carbon.identity.application.mgt.ui.util.ApplicationMgtUIConstants" %>
 <%@ page import="org.wso2.carbon.identity.application.mgt.ui.ApplicationPurpose" %>
 <%@ page import="org.wso2.carbon.identity.application.mgt.ui.ApplicationPurposes" %>
+<%@ page import="org.wso2.carbon.identity.base.IdentityConstants" %>
 <%@ page import="org.wso2.carbon.identity.core.util.IdentityUtil" %>
 <%@ page import="org.wso2.carbon.ui.CarbonUIMessage" %>
 <%@ page import="org.wso2.carbon.ui.CarbonUIUtil" %>
@@ -145,8 +146,9 @@
     String jwksUri = null;
     boolean hasJWKSUri = false;
 
-    // SP bound consent skip
+    // SP bound consent skip.
     boolean skipContent = false;
+    boolean skipLogoutContent = false;
 
     ServiceProviderProperty[] spProperties = appBean.getServiceProvider().getSpProperties();
 
@@ -155,8 +157,13 @@
             if (ApplicationMgtUIUtil.JWKS_URI.equals(spProperty.getName())) {
                 hasJWKSUri = true;
                 jwksUri = spProperty.getValue();
-            } else if (ApplicationMgtUIConstants.SKIP_CONSENT.equals(spProperty.getName())) {
-                skipContent = Boolean.parseBoolean(spProperty.getValue());
+            } else {
+                if (ApplicationMgtUIConstants.SKIP_CONSENT.equals(spProperty.getName())) {
+                    skipContent = Boolean.parseBoolean(spProperty.getValue());
+                }
+                if (IdentityConstants.SKIP_LOGOUT_CONSENT.equals(spProperty.getName())) {
+                    skipLogoutContent = Boolean.parseBoolean(spProperty.getValue());
+                }
             }
         }
     }
@@ -2784,6 +2791,14 @@
                                                     </br>
                                                     <div class="sectionHelp">
                                                         <fmt:message key='help.skip.consent'/>
+                                                    </div>
+                                                </tr>
+                                                <tr>
+                                                    <input type="checkbox" id="skipLogoutConsent" name="skipLogoutConsent" <%=skipLogoutContent ? "checked" : ""%> value="true"/>
+                                                    <label for="skipLogoutConsent"><fmt:message key="config.application.skip.logout.consent"/></label>
+                                                    </br>
+                                                    <div class="sectionHelp">
+                                                        <fmt:message key='help.skip.logout.consent'/>
                                                     </div>
                                                 </tr>
                                             </table>

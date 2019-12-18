@@ -18,15 +18,14 @@
 
 package org.wso2.carbon.identity.mgt.endpoint;
 
-import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
-import org.apache.axis2.transport.http.HttpTransportProperties;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxrs.provider.json.JSONProvider;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.mgt.endpoint.client.model.User;
+import org.wso2.carbon.identity.mgt.endpoint.util.Utils;
 import org.wso2.carbon.user.core.UserCoreConstants;
 import org.wso2.carbon.user.core.util.UserCoreUtil;
 import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
@@ -155,13 +154,7 @@ public class IdentityManagementServiceUtil {
      * @param client service client
      */
     public void authenticate(ServiceClient client) {
-        Options option = client.getOptions();
-        HttpTransportProperties.Authenticator auth = new HttpTransportProperties.Authenticator();
-        auth.setUsername(accessUsername);
-        auth.setPassword(accessPassword);
-        auth.setPreemptiveAuthentication(true);
-        option.setProperty(org.apache.axis2.transport.http.HTTPConstants.AUTHENTICATE, auth);
-        option.setManageSession(true);
+        Utils.setOptions(client, accessUsername, accessPassword);
     }
 
     public List getJSONProvider(){
