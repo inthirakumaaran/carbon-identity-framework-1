@@ -56,8 +56,6 @@ public class EndpointConfigManager {
      */
     public static void init() {
 
-
-
         try {
             if (!initialized) {
                 prop = new Properties();
@@ -66,7 +64,8 @@ public class EndpointConfigManager {
 
                 InputStream inputStream;
                 if (configFile.exists()) {
-                    log.info(Constants.TenantConstants.CONFIG_FILE_NAME + " file loaded from " + Constants.TenantConstants.CONFIG_RELATIVE_PATH);
+                    log.info(Constants.TenantConstants.CONFIG_FILE_NAME + " file loaded from " + Constants.
+                            TenantConstants.CONFIG_RELATIVE_PATH);
                     inputStream = new FileInputStream(configFile);
 
                     prop.load(inputStream);
@@ -74,13 +73,18 @@ public class EndpointConfigManager {
                     // Resolve encrypted properties with secure vault
                     resolveSecrets(prop);
                 } else {
-                    inputStream = EndpointConfigManager.class.getClassLoader().getResourceAsStream(Constants.TenantConstants.CONFIG_FILE_NAME);
+                    inputStream = EndpointConfigManager.class.getClassLoader().getResourceAsStream(Constants.
+                            TenantConstants.CONFIG_FILE_NAME);
                     if (inputStream != null) {
                         prop.load(inputStream);
-                        log.debug(Constants.TenantConstants.CONFIG_FILE_NAME + " file loaded from authentication endpoint webapp");
+                        if(log.isDebugEnabled()) {
+                            log.debug(Constants.TenantConstants.CONFIG_FILE_NAME + " " +
+                                    "file loaded from authentication endpoint webapp");
+                        }
                     } else {
                         if (log.isDebugEnabled()) {
-                            log.debug(Constants.TenantConstants.CONFIG_FILE_NAME + " could not be located in " + Constants.TenantConstants.CONFIG_RELATIVE_PATH
+                            log.debug(Constants.TenantConstants.CONFIG_FILE_NAME + " could not be located in " +
+                                    Constants.TenantConstants.CONFIG_RELATIVE_PATH
                                     + " or authentication endpoint webapp");
                         }
                     }
@@ -157,7 +161,7 @@ public class EndpointConfigManager {
      * @return Property value
      */
     private static String getPropertyValue(String key) {
-        
+
         if ((Constants.SERVICES_URL.equals(key)) && !prop.containsKey(Constants.SERVICES_URL)) {
             String serviceUrl = IdentityUtil.getServicePath();
             return IdentityUtil.getServerURL(serviceUrl, true, true);
@@ -231,3 +235,4 @@ public class EndpointConfigManager {
         }
     }
 }
+
