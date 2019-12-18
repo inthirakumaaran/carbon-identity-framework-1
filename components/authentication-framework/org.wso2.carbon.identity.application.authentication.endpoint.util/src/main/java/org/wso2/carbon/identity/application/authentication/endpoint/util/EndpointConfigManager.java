@@ -76,8 +76,10 @@ public class EndpointConfigManager {
                         .getResourceAsStream(Constants.TenantConstants.CONFIG_FILE_NAME);
                 if (inputStream != null) {
                     prop.load(inputStream);
-                    log.debug(Constants.TenantConstants.CONFIG_FILE_NAME
-                            + " file loaded from authentication endpoint webapp");
+                    if (log.isDebugEnabled()) {
+                        log.debug(Constants.TenantConstants.CONFIG_FILE_NAME
+                                + " file loaded from authentication endpoint webapp");
+                    }
                 } else {
                     if (log.isDebugEnabled()) {
                         log.debug(Constants.TenantConstants.CONFIG_FILE_NAME + " could not be located in "
