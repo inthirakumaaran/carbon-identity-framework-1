@@ -122,11 +122,13 @@ public class FileBasedUserStoreDAOImpl extends AbstractUserStoreDAO {
     }
 
     private void writeToUserStoreConfigurationFile(Path userStoreConfigFile, UserStoreDTO userStoreDTO,
-                                                   boolean editSecondaryUserStore, boolean isStateChange)
+                                                   boolean editSecondaryUserStore, boolean isStateChange,
+                                                   String existingDomainName)
             throws IdentityUserStoreMgtException {
 
         try {
-            writeUserMgtXMLFile(userStoreConfigFile, userStoreDTO, editSecondaryUserStore, isStateChange);
+            writeUserMgtXMLFile(userStoreConfigFile, userStoreDTO, editSecondaryUserStore, isStateChange,
+                    existingDomainName);
             if (log.isDebugEnabled()) {
                 log.debug("New user store successfully written to the file" + userStoreConfigFile.toAbsolutePath());
             }
@@ -271,7 +273,8 @@ public class FileBasedUserStoreDAOImpl extends AbstractUserStoreDAO {
                 if (Files.exists(userStoreConfigFile)) {
                     throwException(userStorePersistanceDTO.getUserStoreDTO().getDomainId(), false);
                 }
-                writeToUserStoreConfigurationFile(userStoreConfigFile, userStorePersistanceDTO.getUserStoreDTO(), false, false);
+                writeToUserStoreConfigurationFile(userStoreConfigFile, userStorePersistanceDTO.getUserStoreDTO(),
+                        false, false, domainName);
             } else {
                 if (log.isDebugEnabled()) {
                     log.debug("The user store domain: " + domainName + "is not a valid domain name.");
@@ -300,8 +303,8 @@ public class FileBasedUserStoreDAOImpl extends AbstractUserStoreDAO {
             if (!Files.exists(userStoreConfigFile)) {
                 throwException(userStorePersistanceDTO.getUserStoreDTO().getDomainId(), true);
             }
-            writeToUserStoreConfigurationFile(userStoreConfigFile, userStorePersistanceDTO.getUserStoreDTO(), true,
-                    isStateChange);
+            writeToUserStoreConfigurationFile(userStoreConfigFile, userStorePersistanceDTO.getUserStoreDTO(),
+                    true, isStateChange, domainName);
         } else {
             String errorMessage = "Trying to edit an invalid domain : " + domainName;
             throw new IdentityUserStoreMgtException(errorMessage);
@@ -355,7 +358,8 @@ public class FileBasedUserStoreDAOImpl extends AbstractUserStoreDAO {
         }
         try {
             Files.delete(previousUserStoreConfigFile);
-            writeToUserStoreConfigurationFile(userStoreConfigFile, userStorePersistanceDTO.getUserStoreDTO(), true, false);
+            writeToUserStoreConfigurationFile(userStoreConfigFile, userStorePersistanceDTO.getUserStoreDTO(),
+                    true, false, previousDomainName);
         } catch (IOException e) {
             log.info("Error when deleting previous configuration files " + previousUserStoreConfigFile);
         }
