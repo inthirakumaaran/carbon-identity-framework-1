@@ -48,7 +48,7 @@ public class ClaimConfigListener implements UserStoreConfigListener {
 
         try {
             IdentityClaimManagementServiceDataHolder.getInstance().getClaimManagementService()
-                    .removeAttributeClaimMappings(tenantId, userstoreDomain);
+                    .removeClaimMappingAttributes(tenantId, userstoreDomain);
         } catch (ClaimMetadataException e) {
             throw new UserStoreException(e.getMessage(), e);
         }

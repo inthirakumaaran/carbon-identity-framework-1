@@ -90,7 +90,7 @@ public class CacheBackedLocalClaimDAO {
      * @param userstoreDomain Domain name
      * @throws UserStoreException If an error occurred while removing local claims
      */
-    public void removeAttributeClaimMappings(int tenantId, String userstoreDomain) throws UserStoreException {
+    public void removeClaimMappingAttributes(int tenantId, String userstoreDomain) throws UserStoreException {
 
         if (StringUtils.isEmpty(userstoreDomain)) {
             String message = ClaimConstants.ErrorMessage.ERROR_CODE_EMPTY_TENANT_DOMAIN.getMessage();
@@ -99,7 +99,7 @@ public class CacheBackedLocalClaimDAO {
             }
             throw new UserStoreException(message);
         }
-        localClaimDAO.deleteClaimAttributeMappings(tenantId, userstoreDomain);
+        localClaimDAO.deleteClaimMappingAttributes(tenantId, userstoreDomain);
         localClaimInvalidationCache.clearCacheEntry(tenantId);
     }
 }

@@ -148,7 +148,7 @@ public interface ClaimMetadataManagementService {
      * @param userstoreDomain Tenant domain
      * @throws ClaimMetadataException If an error occurred while removing local claim mappings
      */
-    default void removeAttributeClaimMappings(int tenantId, String userstoreDomain) throws ClaimMetadataException {
+    default void removeClaimMappingAttributes(int tenantId, String userstoreDomain) throws ClaimMetadataException {
 
     }
 }

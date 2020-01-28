@@ -123,7 +123,7 @@ public class LocalClaimDAO extends ClaimDAO {
             int localClaimId = getClaimId(connection, ClaimConstants.LOCAL_CLAIM_DIALECT_URI, localClaimURI, tenantId);
             // TODO : Handle invalid local claim URI
 
-            deleteClaimAttributeMappings(connection, localClaimId, tenantId);
+            deleteClaimMappingAttributes(connection, localClaimId, tenantId);
             addClaimAttributeMappings(connection, localClaimId, localClaim.getMappedAttributes(), tenantId);
 
             deleteClaimProperties(connection, localClaimId, tenantId);
@@ -209,7 +209,7 @@ public class LocalClaimDAO extends ClaimDAO {
         }
     }
 
-    private void deleteClaimAttributeMappings(Connection connection, int localClaimId, int tenantId) throws
+    private void deleteClaimMappingAttributes(Connection connection, int localClaimId, int tenantId) throws
             ClaimMetadataException {
 
         PreparedStatement prepStmt = null;
@@ -250,7 +250,7 @@ public class LocalClaimDAO extends ClaimDAO {
      * @param userstoreDomain Domain name
      * @throws UserStoreException If an error occurred while deleting claim mappings
      */
-    public void deleteClaimAttributeMappings(int tenantId, String userstoreDomain) throws UserStoreException {
+    public void deleteClaimMappingAttributes(int tenantId, String userstoreDomain) throws UserStoreException {
 
         if (StringUtils.isEmpty(userstoreDomain)) {
             String message = ClaimConstants.ErrorMessage.ERROR_CODE_EMPTY_TENANT_DOMAIN.getMessage();

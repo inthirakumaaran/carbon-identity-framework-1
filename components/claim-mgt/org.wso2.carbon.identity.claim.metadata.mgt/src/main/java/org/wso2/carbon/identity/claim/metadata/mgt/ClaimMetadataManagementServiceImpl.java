@@ -337,7 +337,7 @@ public class ClaimMetadataManagementServiceImpl implements ClaimMetadataManageme
     }
 
     @Override
-    public void removeAttributeClaimMappings(int tenantId, String userstoreDomain) throws ClaimMetadataException {
+    public void removeClaimMappingAttributes(int tenantId, String userstoreDomain) throws ClaimMetadataException {
 
         if (StringUtils.isEmpty(userstoreDomain)) {
             String message = ClaimConstants.ErrorMessage.ERROR_CODE_EMPTY_TENANT_DOMAIN.getMessage();
@@ -348,7 +348,7 @@ public class ClaimMetadataManagementServiceImpl implements ClaimMetadataManageme
                     message);
         }
         try {
-            this.localClaimDAO.removeAttributeClaimMappings(tenantId, userstoreDomain);
+            this.localClaimDAO.removeClaimMappingAttributes(tenantId, userstoreDomain);
         } catch (UserStoreException e) {
             String errorMessage = String.format(
                     ClaimConstants.ErrorMessage.ERROR_CODE_SERVER_ERROR_DELETING_CLAIM_MAPPINGS.getMessage(),
