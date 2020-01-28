@@ -18,16 +18,10 @@
 
 package org.wso2.carbon.identity.claim.metadata.mgt.listener;
 
-import org.wso2.carbon.identity.claim.metadata.mgt.cache.LocalClaimCache;
-import org.wso2.carbon.identity.claim.metadata.mgt.util.ClaimConstants;
-import org.wso2.carbon.identity.claim.metadata.mgt.util.SQLConstants;
-import org.wso2.carbon.identity.core.util.IdentityDatabaseUtil;
+import org.wso2.carbon.identity.claim.metadata.mgt.exception.ClaimMetadataException;
+import org.wso2.carbon.identity.claim.metadata.mgt.internal.IdentityClaimManagementServiceDataHolder;
 import org.wso2.carbon.identity.user.store.configuration.listener.UserStoreConfigListener;
 import org.wso2.carbon.user.api.UserStoreException;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 /**
  * Class which contains the implementation of a listener for claim configurations. This listener is responsible for
@@ -50,27 +44,13 @@ public class ClaimConfigListener implements UserStoreConfigListener {
     }
 
     @Override
-    public void onUserStorePreDelete(int tenantId, String domainName) throws UserStoreException {
-
-        Connection dbConnection = IdentityDatabaseUtil.getDBConnection(true);
-        PreparedStatement preparedStatement = null;
+    public void onUserStorePreDelete(int tenantId, String userstoreDomain) throws UserStoreException {
 
         try {
-            preparedStatement = dbConnection.prepareStatement(SQLConstants.DELETE_IDN_CLAIM_MAPPED_ATTRIBUTE);
-            preparedStatement.setString(1, domainName);
-            preparedStatement.setInt(2, tenantId);
-            preparedStatement.executeUpdate();
-            IdentityDatabaseUtil.commitTransaction(dbConnection);
-            LocalClaimCache.getInstance().clearCacheEntry(tenantId);
-        } catch (SQLException e) {
-            IdentityDatabaseUtil.rollbackTransaction(dbConnection);
-            String message =
-                    String.format(ClaimConstants.ErrorMessage.ERROR_CODE_DELETE_IDN_CLAIM_MAPPED_ATTRIBUTE.getMessage(),
-                            domainName, tenantId);
-            throw new UserStoreException(message, e);
-        } finally {
-            IdentityDatabaseUtil.closeStatement(preparedStatement);
-            IdentityDatabaseUtil.closeConnection(dbConnection);
+            IdentityClaimManagementServiceDataHolder.getInstance().getClaimManagementService()
+                    .removeAttributeClaimMappings(tenantId, userstoreDomain);
+        } catch (ClaimMetadataException e) {
+            throw new UserStoreException(e.getMessage(), e);
         }
     }
 

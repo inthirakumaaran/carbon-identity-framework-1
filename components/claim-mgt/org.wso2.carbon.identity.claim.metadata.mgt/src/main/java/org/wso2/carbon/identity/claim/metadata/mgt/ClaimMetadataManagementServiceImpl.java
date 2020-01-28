@@ -27,11 +27,13 @@ import org.wso2.carbon.identity.claim.metadata.mgt.dao.ExternalClaimDAO;
 import org.wso2.carbon.identity.claim.metadata.mgt.dao.LocalClaimDAO;
 import org.wso2.carbon.identity.claim.metadata.mgt.exception.ClaimMetadataClientException;
 import org.wso2.carbon.identity.claim.metadata.mgt.exception.ClaimMetadataException;
+import org.wso2.carbon.identity.claim.metadata.mgt.exception.ClaimMetadataServerException;
 import org.wso2.carbon.identity.claim.metadata.mgt.model.ClaimDialect;
 import org.wso2.carbon.identity.claim.metadata.mgt.model.ExternalClaim;
 import org.wso2.carbon.identity.claim.metadata.mgt.model.LocalClaim;
 import org.wso2.carbon.identity.claim.metadata.mgt.util.ClaimConstants;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
+import org.wso2.carbon.user.api.UserStoreException;
 
 import java.util.List;
 
@@ -332,5 +334,31 @@ public class ClaimMetadataManagementServiceImpl implements ClaimMetadataManageme
         this.externalClaimDAO.removeExternalClaim(externalClaimDialectURI, externalClaimURI, tenantId);
 
         // Add listener
+    }
+
+    @Override
+    public void removeAttributeClaimMappings(int tenantId, String userstoreDomain) throws ClaimMetadataException {
+
+        if (StringUtils.isEmpty(userstoreDomain)) {
+            String message = ClaimConstants.ErrorMessage.ERROR_CODE_EMPTY_TENANT_DOMAIN.getMessage();
+            if (log.isDebugEnabled()) {
+                log.debug(message);
+            }
+            throw new ClaimMetadataClientException(ClaimConstants.ErrorMessage.ERROR_CODE_EMPTY_TENANT_DOMAIN.getCode(),
+                    message);
+        }
+        try {
+            this.localClaimDAO.removeAttributeClaimMappings(tenantId, userstoreDomain);
+        } catch (UserStoreException e) {
+            String errorMessage = String.format(
+                    ClaimConstants.ErrorMessage.ERROR_CODE_SERVER_ERROR_DELETING_CLAIM_MAPPINGS.getMessage(),
+                    tenantId, userstoreDomain);
+            if (log.isDebugEnabled()) {
+                log.debug(errorMessage, e);
+            }
+            throw new ClaimMetadataServerException(
+                    ClaimConstants.ErrorMessage.ERROR_CODE_SERVER_ERROR_DELETING_CLAIM_MAPPINGS.getCode(),
+                    errorMessage, e);
+        }
     }
 }

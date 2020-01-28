@@ -62,8 +62,11 @@ public class ClaimConstants {
                 "Mapped local claim URI cannot be empty"),
         ERROR_CODE_MAPPED_TO_INVALID_LOCAL_CLAIM_URI("100009",
                 "Invalid Claim URI : %s for Claim Dialect : %s"),
+        ERROR_CODE_EMPTY_TENANT_DOMAIN("60000", "Empty tenant domain in the request"),
         ERROR_CODE_DELETE_IDN_CLAIM_MAPPED_ATTRIBUTE("65001", "Error occurred while deleting claim " +
-                "mapped attributes for domain : %s with tenant Id : %s from table : IDN_CLAIM_MAPPED_ATTRIBUTE");
+                "mapped attributes for domain : %s with tenant Id : %s from table : IDN_CLAIM_MAPPED_ATTRIBUTE"),
+        ERROR_CODE_SERVER_ERROR_DELETING_CLAIM_MAPPINGS("65001", "Error occurred while deleting the " +
+                "claim mapping for the tenant : %s with domain : %s");
 
         private final String code;
         private final String message;
