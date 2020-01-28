@@ -340,12 +340,8 @@ public class ClaimMetadataManagementServiceImpl implements ClaimMetadataManageme
     public void removeClaimMappingAttributes(int tenantId, String userstoreDomain) throws ClaimMetadataException {
 
         if (StringUtils.isEmpty(userstoreDomain)) {
-            String message = ClaimConstants.ErrorMessage.ERROR_CODE_EMPTY_TENANT_DOMAIN.getMessage();
-            if (log.isDebugEnabled()) {
-                log.debug(message);
-            }
             throw new ClaimMetadataClientException(ClaimConstants.ErrorMessage.ERROR_CODE_EMPTY_TENANT_DOMAIN.getCode(),
-                    message);
+                    ClaimConstants.ErrorMessage.ERROR_CODE_EMPTY_TENANT_DOMAIN.getMessage());
         }
         try {
             this.localClaimDAO.removeClaimMappingAttributes(tenantId, userstoreDomain);
@@ -353,9 +349,6 @@ public class ClaimMetadataManagementServiceImpl implements ClaimMetadataManageme
             String errorMessage = String.format(
                     ClaimConstants.ErrorMessage.ERROR_CODE_SERVER_ERROR_DELETING_CLAIM_MAPPINGS.getMessage(),
                     tenantId, userstoreDomain);
-            if (log.isDebugEnabled()) {
-                log.debug(errorMessage, e);
-            }
             throw new ClaimMetadataServerException(
                     ClaimConstants.ErrorMessage.ERROR_CODE_SERVER_ERROR_DELETING_CLAIM_MAPPINGS.getCode(),
                     errorMessage, e);

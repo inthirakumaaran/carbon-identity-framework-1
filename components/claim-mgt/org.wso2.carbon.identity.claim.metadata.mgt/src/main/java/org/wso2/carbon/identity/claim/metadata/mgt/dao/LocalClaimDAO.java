@@ -274,8 +274,7 @@ public class LocalClaimDAO extends ClaimDAO {
                             userstoreDomain, tenantId);
             throw new UserStoreException(message, e);
         } finally {
-            IdentityDatabaseUtil.closeStatement(preparedStatement);
-            IdentityDatabaseUtil.closeConnection(dbConnection);
+            IdentityDatabaseUtil.closeAllConnections(dbConnection, null, preparedStatement);
         }
     }
 }
