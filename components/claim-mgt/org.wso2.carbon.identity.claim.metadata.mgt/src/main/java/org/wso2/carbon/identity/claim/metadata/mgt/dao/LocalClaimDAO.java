@@ -26,6 +26,7 @@ import org.wso2.carbon.identity.claim.metadata.mgt.model.LocalClaim;
 import org.wso2.carbon.identity.claim.metadata.mgt.util.ClaimConstants;
 import org.wso2.carbon.identity.claim.metadata.mgt.util.SQLConstants;
 import org.wso2.carbon.identity.core.util.IdentityDatabaseUtil;
+import org.wso2.carbon.user.api.UserStoreException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -122,7 +123,7 @@ public class LocalClaimDAO extends ClaimDAO {
             int localClaimId = getClaimId(connection, ClaimConstants.LOCAL_CLAIM_DIALECT_URI, localClaimURI, tenantId);
             // TODO : Handle invalid local claim URI
 
-            deleteClaimAttributeMappings(connection, localClaimId, tenantId);
+            deleteClaimMappingAttributes(connection, localClaimId, tenantId);
             addClaimAttributeMappings(connection, localClaimId, localClaim.getMappedAttributes(), tenantId);
 
             deleteClaimProperties(connection, localClaimId, tenantId);
@@ -208,7 +209,7 @@ public class LocalClaimDAO extends ClaimDAO {
         }
     }
 
-    private void deleteClaimAttributeMappings(Connection connection, int localClaimId, int tenantId) throws
+    private void deleteClaimMappingAttributes(Connection connection, int localClaimId, int tenantId) throws
             ClaimMetadataException {
 
         PreparedStatement prepStmt = null;
@@ -239,6 +240,41 @@ public class LocalClaimDAO extends ClaimDAO {
             }
         } catch (SQLException e1) {
             log.error("An error occurred while rolling back transactions. ", e1);
+        }
+    }
+
+    /**
+     * Delete claim attribute mappings.
+     *
+     * @param tenantId        Tenant Id
+     * @param userstoreDomain Domain name
+     * @throws UserStoreException If an error occurred while deleting claim mappings
+     */
+    public void deleteClaimMappingAttributes(int tenantId, String userstoreDomain) throws UserStoreException {
+
+        if (StringUtils.isEmpty(userstoreDomain)) {
+            String message = ClaimConstants.ErrorMessage.ERROR_CODE_EMPTY_TENANT_DOMAIN.getMessage();
+            if (log.isDebugEnabled()) {
+                log.debug(message);
+            }
+            throw new UserStoreException(message);
+        }
+        Connection dbConnection = IdentityDatabaseUtil.getDBConnection(true);
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = dbConnection.prepareStatement(SQLConstants.DELETE_IDN_CLAIM_MAPPED_ATTRIBUTE);
+            preparedStatement.setString(1, userstoreDomain);
+            preparedStatement.setInt(2, tenantId);
+            preparedStatement.executeUpdate();
+            IdentityDatabaseUtil.commitTransaction(dbConnection);
+        } catch (SQLException e) {
+            IdentityDatabaseUtil.rollbackTransaction(dbConnection);
+            String message =
+                    String.format(ClaimConstants.ErrorMessage.ERROR_CODE_DELETE_IDN_CLAIM_MAPPED_ATTRIBUTE.getMessage(),
+                            userstoreDomain, tenantId);
+            throw new UserStoreException(message, e);
+        } finally {
+            IdentityDatabaseUtil.closeAllConnections(dbConnection, null, preparedStatement);
         }
     }
 }

@@ -34,4 +34,16 @@ public class ClaimMetadataClientException extends ClaimMetadataException {
 
         super(error.getCode(), error.getMessage());
     }
+
+    /**
+     * Constructs a new exception with an error code, detail message and throwable.
+     *
+     * @param errorCode The error code
+     * @param message   The detail message
+     * @param cause     Throwable
+     */
+    public ClaimMetadataClientException(String errorCode, String message, Throwable cause) {
+
+        super(errorCode, message, cause);
+    }
 }
