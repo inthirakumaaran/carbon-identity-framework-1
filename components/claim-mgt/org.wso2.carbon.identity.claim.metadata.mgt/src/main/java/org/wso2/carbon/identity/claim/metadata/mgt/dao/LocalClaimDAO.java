@@ -259,6 +259,7 @@ public class LocalClaimDAO extends ClaimDAO {
             }
             throw new UserStoreException(message);
         }
+        userstoreDomain = userstoreDomain.toUpperCase();
         Connection dbConnection = IdentityDatabaseUtil.getDBConnection(true);
         PreparedStatement preparedStatement = null;
         try {
