@@ -133,6 +133,7 @@ public class IdentityProviderManager implements IdpManager {
         String scimGroupsEndpoint;
         String scim2UsersEndpoint;
         String scim2GroupsEndpoint;
+        String samlAuthnRequestsSigningEnabled;
 
         openIdUrl = IdentityUtil.getProperty(IdentityConstants.ServerConfig.OPENID_SERVER_URL);
         samlECPUrl = IdentityUtil.getProperty(IdentityConstants.ServerConfig.SAML_ECP_URL);
@@ -167,6 +168,10 @@ public class IdentityProviderManager implements IdpManager {
                 + IdPManagementUtil.getTenantParameter();
 
         samlLogoutUrl = IdentityUtil.getServerURL(IdentityConstants.ServerConfig.SAMLSSO, true, true)
+                + IdPManagementUtil.getTenantParameter();
+
+        samlAuthnRequestsSigningEnabled = IdentityUtil.getServerURL(IdentityConstants.
+                ServerConfig.SAML_METADATA_AUTHN_REQUESTS_SIGNING_ENABLED, true, true)
                 + IdPManagementUtil.getTenantParameter();
 
         if (StringUtils.isBlank(samlArtifactUrl)) {
@@ -465,7 +470,15 @@ public class IdentityProviderManager implements IdpManager {
                     SAML_METADATA_SIGNING_ENABLED_DEFAULT);
         }
         propertiesList.add(samlMetadataSigningEnabledProperty);
-
+        Property samlAuthnRequestSigningProperty = IdentityApplicationManagementUtil.getProperty(saml2SSOFedAuthn.
+                getProperties(), IdentityApplicationConstants.Authenticator.SAML2SSO.
+                SAML_METADATA_AUTHN_REQUESTS_SIGNING_ENABLED);
+        if (samlAuthnRequestSigningProperty == null) {
+            samlAuthnRequestSigningProperty = new Property();
+            samlAuthnRequestSigningProperty.setName(IdentityApplicationConstants.Authenticator.SAML2SSO.
+                    SAML_METADATA_AUTHN_REQUESTS_SIGNING_ENABLED);
+            samlAuthnRequestSigningProperty.setValue(samlAuthnRequestsSigningEnabled);
+        }
         saml2SSOFedAuthn.setProperties(propertiesList.toArray(new Property[propertiesList.size()]));
         fedAuthnCofigs.add(saml2SSOFedAuthn);
 
@@ -820,9 +833,21 @@ public class IdentityProviderManager implements IdpManager {
         samlMetadataSigningEnabledProperty.setName(IdentityApplicationConstants.Authenticator.SAML2SSO.
                 SAML_METADATA_SIGNING_ENABLED);
         samlMetadataSigningEnabledProperty.setValue(samlMetadataSigningEnabled);
+        Property samlAuthnRequestSigningProperty = new Property();
+        String samlAuthnRequestSigningEnabled = IdentityUtil.getProperty(IdentityConstants.ServerConfig.
+                SAML_METADATA_AUTHN_REQUESTS_SIGNING_ENABLED);
+        if (StringUtils.isBlank(samlAuthnRequestSigningEnabled)) {
+            log.warn("samlAuthnRequestSigningEnabled in identity.xml should be a boolean value");
+            samlAuthnRequestSigningEnabled = IdentityApplicationConstants.Authenticator.SAML2SSO.
+                    SAML_METADATA_AUTHN_REQUESTS_SIGNING_DEFAULT;
+        }
+        samlAuthnRequestSigningProperty.setName(IdentityApplicationConstants.Authenticator.SAML2SSO.
+                SAML_METADATA_AUTHN_REQUESTS_SIGNING_ENABLED);
+        samlAuthnRequestSigningProperty.setValue(samlAuthnRequestSigningEnabled);
         List<Property> propertyList = new ArrayList<>(Arrays.asList(saml2SSOResidentAuthenticatorConfig.getProperties()));
         propertyList.add(samlMetadataValidityPeriodProperty);
         propertyList.add(samlMetadataSigningEnabledProperty);
+        propertyList.add(samlAuthnRequestSigningProperty);
         Property[] properties = new Property[propertyList.size()];
         properties = propertyList.toArray(properties);
         saml2SSOResidentAuthenticatorConfig.setProperties(properties);
@@ -957,6 +982,13 @@ public class IdentityProviderManager implements IdpManager {
                             SAML_METADATA_SIGNING_ENABLED + " of ResidentIdP should be a boolean value ");
                 }
 
+            } else if (StringUtils.equals(idpProp.getName(), IdentityApplicationConstants.Authenticator.SAML2SSO.
+                    SAML_METADATA_AUTHN_REQUESTS_SIGNING_ENABLED)) {
+                if (StringUtils.isBlank(idpProp.getValue())) {
+                    throw new IdentityProviderManagementException(IdentityApplicationConstants.Authenticator.SAML2SSO.
+                            SAML_METADATA_AUTHN_REQUESTS_SIGNING_ENABLED +
+                            " of ResidentIdP should be a boolean value ");
+                }
             }
         }
         // invoking the pre listeners
