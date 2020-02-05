@@ -77,7 +77,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import static org.wso2.carbon.identity.application.authentication.framework.handler.request.PostAuthnHandlerFlowStatus.SUCCESS_COMPLETED;
-import static org.wso2.carbon.identity.application.authentication.framework.handler.request.impl.consent.constant.SSOConsentConstants.USERNAME_CLAIM;
 import static org.wso2.carbon.identity.application.authentication.framework.util.FrameworkErrorConstants.ErrorMessages.ERROR_WHILE_GETTING_IDP_BY_NAME;
 import static org.wso2.carbon.identity.application.authentication.framework.util.FrameworkErrorConstants.ErrorMessages.ERROR_WHILE_GETTING_REALM_IN_POST_AUTHENTICATION;
 import static org.wso2.carbon.identity.application.authentication.framework.util.FrameworkErrorConstants.ErrorMessages.ERROR_WHILE_TRYING_TO_GET_CLAIMS_WHILE_TRYING_TO_PASSWORD_PROVISION;
@@ -194,7 +193,7 @@ public class JITProvisioningPostAuthenticationHandler extends AbstractPostAuthnH
                     }
                     callDefaultProvisioningHandler(username, context, externalIdPConfig, combinedLocalClaims,
                             stepConfig);
-                   handleConstents(request, stepConfig, context.getTenantDomain());
+                   handleConsents(request, stepConfig, context.getTenantDomain());
                 }
             }
         }
@@ -292,7 +291,8 @@ public class JITProvisioningPostAuthenticationHandler extends AbstractPostAuthnH
 
                     String associatedLocalUser =
                             getLocalUserAssociatedForFederatedIdentifier(stepConfig.getAuthenticatedIdP(),
-                                    stepConfig.getAuthenticatedUser().getAuthenticatedSubjectIdentifier());
+                                    stepConfig.getAuthenticatedUser().getAuthenticatedSubjectIdentifier(),
+                                    context.getTenantDomain());
 
                     String username;
                     String userIdClaimUriInLocalDialect = getUserIdClaimUriInLocalDialect(externalIdPConfig);
@@ -454,11 +454,14 @@ public class JITProvisioningPostAuthenticationHandler extends AbstractPostAuthnH
      *
      * @param idpName                        Name of IDP related with current step.
      * @param authenticatedSubjectIdentifier Authenticated subject identifier.
+     * @param tenantDomain                   Tenant Domain.
      * @return username associated locally.
      */
-    private String getLocalUserAssociatedForFederatedIdentifier(String idpName, String authenticatedSubjectIdentifier)
+    private String getLocalUserAssociatedForFederatedIdentifier(String idpName, String authenticatedSubjectIdentifier,
+                                                                String tenantDomain)
             throws PostAuthenticationFailedException {
 
+        FrameworkUtils.startTenantFlow(tenantDomain);
         String username = null;
         try {
             UserProfileAdmin userProfileAdmin = UserProfileAdmin.getInstance();
@@ -467,6 +470,8 @@ public class JITProvisioningPostAuthenticationHandler extends AbstractPostAuthnH
             handleExceptions(
                     String.format(ErrorMessages.ERROR_WHILE_GETTING_USERNAME_ASSOCIATED_WITH_IDP.getMessage(), idpName),
                     ErrorMessages.ERROR_WHILE_GETTING_USERNAME_ASSOCIATED_WITH_IDP.getCode(), e);
+        } finally {
+            FrameworkUtils.endTenantFlow();
         }
         return username;
     }
@@ -698,11 +703,11 @@ public class JITProvisioningPostAuthenticationHandler extends AbstractPostAuthnH
      * @param tenantDomain Specific tenant domain.
      * @throws PostAuthenticationFailedException Post Authentication failed exception.
      */
-    private void handleConstents(HttpServletRequest request, StepConfig stepConfig, String tenantDomain)
+    private void handleConsents(HttpServletRequest request, StepConfig stepConfig, String tenantDomain)
             throws PostAuthenticationFailedException {
 
         String userName = getLocalUserAssociatedForFederatedIdentifier(stepConfig.getAuthenticatedIdP(),
-                stepConfig.getAuthenticatedUser().getAuthenticatedSubjectIdentifier());
+                stepConfig.getAuthenticatedUser().getAuthenticatedSubjectIdentifier(), tenantDomain);
         String consent = request.getParameter("consent");
         String policyURL = request.getParameter("policy");
         if (StringUtils.isNotEmpty(consent)) {
