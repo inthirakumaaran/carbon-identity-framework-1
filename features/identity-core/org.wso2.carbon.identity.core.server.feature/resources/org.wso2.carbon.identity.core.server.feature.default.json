@@ -22,7 +22,6 @@
   "key_mgt.keystore_dir": "${carbon.home}/conf/keystores",
   "key_mgt.key_manager_type": "SunX509",
   "key_mgt.trust_manager_type": "SunX509",
-  "key_mgt.userstore_password_encryption": "InternalKeyStore",
   "identity.issuer_policy": "SelfAndManaged",
   "identity.token_validation_policy": "CertValidate",
 
@@ -124,6 +123,8 @@
   "oauth.grant_type.saml_bearer.user_type": "FEDERATED",
 
   "oauth.prompt_consent": "$ref{authentication.consent.prompt}",
+  "oauth.prompt_login_consent": "$ref{oauth.prompt_consent}",
+  "oauth.prompt_logout_consent": "$ref{oauth.prompt_consent}",
   "oauth.oidc.extensions.id_token_builder": "org.wso2.carbon.identity.openidconnect.DefaultIDTokenBuilder",
   "oauth.oidc.claims.enable_oidc_dialect": false,
   "oauth.oidc.claims.enable_unmapped_user_attributes": false,
@@ -215,6 +216,7 @@
   "scim2.filter_users_and_groups_from_primary_domain": false,
   "scim2.mandate_domain_for_uesrnames_and_group_names_in_response": false,
   "scim2.mandate_domain_for_group_names_in_groups_response": false,
+  "scim2.return_updated_group_in_group_patch_response": true,
 
   "identity_mgt.recovery.notification.manage_internally": true,
   "identity_mgt.recovery.callback_url": ".*",
@@ -419,6 +421,7 @@
   ],
 
   "oauth.jwks_endpoint.enable": true,
+  "oauth.jwks_endpoint.enforce_certificate_expiry_time_validity": true,
   "oauth.jwks_endpoint.connection_timeout": "1s",
   "oauth.jwks_endpoint.read_timeout": "1s",
   "oauth.jwks_endpoint.size_limit_bytes": "51200",

@@ -32,6 +32,7 @@ import org.apache.cxf.jaxrs.client.JAXRSClientFactoryBean;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.owasp.encoder.Encode;
+import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.mgt.endpoint.client.model.Claim;
 import org.wso2.carbon.identity.mgt.endpoint.client.model.Error;
 import org.wso2.carbon.identity.mgt.endpoint.client.model.RetryError;
@@ -134,7 +135,7 @@ public class IdentityManagementEndpointUtil {
         if (StringUtils.isNotBlank(userPortalUrl)) {
             return userPortalUrl;
         }
-        return IdentityManagementEndpointConstants.DEFAULT_USER_PORTAL_URL;
+        return IdentityUtil.getServerURL(IdentityManagementEndpointConstants.USER_PORTAL_URL, true, true);
     }
 
     /**

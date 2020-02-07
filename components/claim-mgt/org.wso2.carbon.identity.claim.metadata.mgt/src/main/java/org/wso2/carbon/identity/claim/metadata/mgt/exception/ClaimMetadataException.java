@@ -37,4 +37,16 @@ public class ClaimMetadataException extends IdentityException {
     public ClaimMetadataException(String message, Throwable e) {
         super(message, e);
     }
+
+    /**
+     * Constructs a new exception with an error code, detail message and throwable.
+     *
+     * @param errorCode The error code
+     * @param message   The detail message
+     * @param cause     Throwable
+     */
+    public ClaimMetadataException(String errorCode, String message, Throwable cause) {
+
+        super(errorCode, message, cause);
+    }
 }
