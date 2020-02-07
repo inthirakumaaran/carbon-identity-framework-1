@@ -173,10 +173,8 @@ public class EntitlementEngine {
             try {
                 entitlementEngineCachingInterval = Long.parseLong(engineCachingInterval);
             } catch (NumberFormatException e) {
-                if (log.isDebugEnabled()) {
-                    log.warn("Invalid value for " + PDPConstants.ENTITLEMENT_ENGINE_CACHING_INTERVAL + ". Using " +
-                            "default value " + entitlementEngineCachingInterval + " seconds.");
-                }
+                log.warn("Invalid value for " + PDPConstants.ENTITLEMENT_ENGINE_CACHING_INTERVAL + ". Using " +
+                        "default value " + entitlementEngineCachingInterval + " seconds.");
             }
         } else {
             if (log.isDebugEnabled()) {
