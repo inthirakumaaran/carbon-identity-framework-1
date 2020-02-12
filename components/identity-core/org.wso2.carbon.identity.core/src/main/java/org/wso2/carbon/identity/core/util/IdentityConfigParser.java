@@ -363,7 +363,7 @@ public class IdentityConfigParser {
                             SameSiteCookie sameSite = SameSiteCookie.valueOf(sameSiteString);
                             cookieConfig.setSameSite(sameSite);
                         } catch (IllegalArgumentException ex) {
-                            throw new IllegalArgumentException("sameSite value should be Strict or Lax or None. ", ex);
+                            throw new IllegalArgumentException("SameSite value should be Strict,Lax or None. ", ex);
                         }
                     }
                     // Add the config to container
