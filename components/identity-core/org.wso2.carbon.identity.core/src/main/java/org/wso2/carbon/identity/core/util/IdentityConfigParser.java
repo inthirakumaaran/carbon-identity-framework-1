@@ -360,7 +360,7 @@ public class IdentityConfigParser {
                     String sameSiteString = cookie.getAttributeValue(new QName(IdentityConstants.COOKIE_SAME_SITE));
                     if (StringUtils.isNotEmpty(sameSiteString)) {
                         try {
-                            SameSiteCookie sameSite = SameSiteCookie.valueOf(sameSiteString);
+                            SameSiteCookie sameSite = SameSiteCookie.valueOf(sameSiteString.toUpperCase());
                             cookieConfig.setSameSite(sameSite);
                         } catch (IllegalArgumentException ex) {
                             throw new IllegalArgumentException("SameSite value should be Strict,Lax or None. ", ex);
