@@ -477,8 +477,10 @@ public class IdentityProviderManager implements IdpManager {
             samlAuthnRequestSigningProperty = new Property();
             samlAuthnRequestSigningProperty.setName(IdentityApplicationConstants.Authenticator.SAML2SSO.
                     SAML_METADATA_AUTHN_REQUESTS_SIGNING_ENABLED);
-            samlAuthnRequestSigningProperty.setValue(samlAuthnRequestsSigningEnabled);
+            samlAuthnRequestSigningProperty.setValue(IdentityApplicationConstants.Authenticator.SAML2SSO.
+                    SAML_METADATA_AUTHN_REQUESTS_SIGNING_DEFAULT);
         }
+        propertiesList.add(samlAuthnRequestSigningProperty);
         saml2SSOFedAuthn.setProperties(propertiesList.toArray(new Property[propertiesList.size()]));
         fedAuthnCofigs.add(saml2SSOFedAuthn);
 
