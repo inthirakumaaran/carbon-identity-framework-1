@@ -19,6 +19,7 @@
 package org.wso2.carbon.identity.user.store.configuration.utils;
 
 import org.apache.axiom.om.util.Base64;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Attr;
@@ -253,10 +254,17 @@ public class SecondaryUserStoreConfigurationUtil {
 
         Map<String, String> secondaryUserStoreProperties = null;
         try {
-            UserStoreManager secondaryUserStoreManager = getSecondaryUserStoreManager(userStoreDomain);
-            if (secondaryUserStoreManager != null) {
-                secondaryUserStoreProperties = secondaryUserStoreManager.getRealmConfiguration()
-                        .getUserStoreProperties();
+            RealmConfiguration realmConfiguration = UserStoreConfigComponent.getRealmService().getTenantUserRealm(
+                    getTenantIdInTheCurrentContext()).getRealmConfiguration();
+            while (realmConfiguration != null) {
+                String domainName = realmConfiguration.getUserStoreProperty(UserCoreConstants.RealmConfig
+                        .PROPERTY_DOMAIN_NAME);
+                if (StringUtils.equalsIgnoreCase(domainName, userStoreDomain)) {
+                    secondaryUserStoreProperties = realmConfiguration.getUserStoreProperties();
+                    break;
+                } else {
+                    realmConfiguration = realmConfiguration.getSecondaryRealmConfig();
+                }
             }
         } catch (UserStoreException e) {
             String errorMessage = "Error while retrieving user store configurations for user store domain: "
