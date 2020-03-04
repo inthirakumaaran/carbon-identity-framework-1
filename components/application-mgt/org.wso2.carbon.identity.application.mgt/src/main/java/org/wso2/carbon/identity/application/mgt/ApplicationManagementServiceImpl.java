@@ -76,6 +76,7 @@ import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.core.UserCoreConstants;
 import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
 import org.wso2.carbon.user.core.util.UserCoreUtil;
+import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -590,7 +591,8 @@ public class ApplicationManagementServiceImpl extends ApplicationManagementServi
             if (isOwnerUpdateRequest(serviceProvider)) {
                 //It is not required to validate the user here, as the user is validating inside the updateApplication
                 // method above. Hence assign application role to the app owner.
-                assignApplicationRole(serviceProvider.getApplicationName(), serviceProvider.getOwner().getUserName());
+                assignApplicationRole(serviceProvider.getApplicationName(),
+                        MultitenantUtils.getTenantAwareUsername(serviceProvider.getOwner().toFullQualifiedUsername()));
             }
 
             if (!isValidPEMCertificate(serviceProvider.getCertificateContent())) {
