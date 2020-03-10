@@ -224,7 +224,7 @@ public interface ConfigurationManager {
      * @return 200 ok. Returns a list of {@link ResourceFile} for the {@link ResourceType}.
      * @throws ConfigurationManagementException Resource management exception.
      */
-    List<ResourceFile> getFiles(String resourceTypeName)
+    List<ResourceFile> getFiles(String resourceTypeName, int tenantId)
             throws ConfigurationManagementException;
 
     /**

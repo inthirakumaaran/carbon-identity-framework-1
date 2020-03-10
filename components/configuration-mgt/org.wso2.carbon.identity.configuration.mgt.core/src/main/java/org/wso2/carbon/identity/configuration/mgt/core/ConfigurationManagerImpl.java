@@ -779,12 +779,12 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
     }
 
     @Override
-    public List<ResourceFile> getFiles(String resourceTypeName) throws ConfigurationManagementException {
+    public List<ResourceFile> getFiles(String resourceTypeName, int tenantId) throws ConfigurationManagementException {
 
         checkFeatureStatus();
         validateRequest(resourceTypeName);
         String resourceTypeId = getResourceTypeId(resourceTypeName);
-        List<ResourceFile> resourceFiles = getConfigurationDAO().getFilesByResourceType(resourceTypeId);
+        List<ResourceFile> resourceFiles = getConfigurationDAO().getFilesByResourceType(resourceTypeId, tenantId);
         if (CollectionUtils.isEmpty(resourceFiles)) {
             if (log.isDebugEnabled()) {
                 log.debug("Resource type: " + resourceTypeName + " does not have any files.");
