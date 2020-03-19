@@ -43,7 +43,7 @@
     String username = request.getParameter("username");
     String confirmationKey = request.getParameter("confirmationKey");
     String callback = request.getParameter("callback");
-    String tenantDomain = request.getParameter("tenantDomain");
+    String tenantDomain = request.getParameter("tenantDomain").trim();
     boolean isUserPortalURL = false;
 
     if (StringUtils.isBlank(callback)) {
@@ -78,7 +78,7 @@
             if (StringUtils.isNotBlank(request.getParameter(claimDTO.getUri()))) {
                 UserClaim userClaim = new UserClaim();
                 userClaim.setUri(claimDTO.getUri());
-                userClaim.setValue(request.getParameter(claimDTO.getUri()));
+                userClaim.setValue(request.getParameter(claimDTO.getUri()).trim());
                 claimDTOList.add(userClaim);
             }
         }
