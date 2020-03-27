@@ -753,7 +753,7 @@ public class DefaultStepHandler implements StepHandler {
                 }
             } else {
                 return response.encodeRedirectURL(loginPage + ("?" + context.getContextIdIncludedQueryParams())) +
-                        "&authenticators=" + authenticatorNames + ":" + FrameworkConstants.LOCAL + retryParam;
+                        "&authenticators=" + URLEncoder.encode(authenticatorNames + ":" + FrameworkConstants.LOCAL, "UTF-8") + retryParam;
             }
         } else {
             String errorCode = errorContext != null ? errorContext.getErrorCode() : null;
