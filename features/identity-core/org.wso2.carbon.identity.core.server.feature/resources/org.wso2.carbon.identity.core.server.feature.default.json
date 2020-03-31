@@ -446,5 +446,7 @@
     "${carbon.protocol}://${carbon.host}:${carbon.management.port}"
   ],
 
-  "user_filtering.show_display_name_of_user": true
+  "user_filtering.show_display_name_of_user": true,
+
+  "MTLS.ClientAuthenticationHeader": "x-wso2-mutual-auth-cert"
 }
