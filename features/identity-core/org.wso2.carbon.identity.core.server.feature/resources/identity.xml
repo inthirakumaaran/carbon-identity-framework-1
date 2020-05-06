@@ -518,7 +518,7 @@
             <EnableDataProviders>false</EnableDataProviders>
         </Introspection-->
         <DCRM>
-            <ApplicationRolePermissionRequired>true</ApplicationRolePermissionRequired>
+            <ApplicationRolePermissionRequiredToView>true</ApplicationRolePermissionRequiredToView>
         </DCRM>
     </OAuth>
 

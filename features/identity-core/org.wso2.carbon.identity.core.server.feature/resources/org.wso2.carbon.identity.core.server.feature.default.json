@@ -106,7 +106,7 @@
   "oauth.grant_type.kerberos.grant_handler": "org.wso2.carbon.identity.oauth2.grant.kerberos.KerberosGrant",
   "oauth.grant_type.kerberos.grant_validator": "org.wso2.carbon.identity.oauth2.grant.kerberos.KerberosGrantValidator",
 
-  "oauth.dcrm.application_role_permission_required": true,
+  "oauth.dcrm.application_role_permission_required_to_view": true,
 
 
   "oauth.extensions.callback_handlers": [
