@@ -517,9 +517,9 @@
         <!--Introspection>
             <EnableDataProviders>false</EnableDataProviders>
         </Introspection-->
-        <!--DCRM>
+        <DCRM>
             <ApplicationRolePermissionRequired>true</ApplicationRolePermissionRequired>
-        </DCRM-->
+        </DCRM>
     </OAuth>
 
     <MultifactorAuthentication>
