@@ -60,15 +60,20 @@
                     if(userName.value){
                         $.ajax({
                             type: "GET",
-                            url: <%=loginContextURL%> + "?sessionDataKey=" + getParameterByName("sessionDataKey") + "&relyingParty=" + getParameterByName("relyingParty") + "&tenantDomain=" + getParameterByName("tenantDomain"),
+                            url: "<%=loginContextURL%>" + "?sessionDataKey=" + getParameterByName("sessionDataKey") + "&relyingParty=" + getParameterByName("relyingParty") + "&tenantDomain=" + getParameterByName("tenantDomain"),
                             success: function (data) {
                                 if (data && data.status == 'redirect' && data.redirectUrl && data.redirectUrl.length > 0) {
                                     window.location.href = data.redirectUrl;
-                                } else {
-                                    // Mark it so that the next submit can be ignored.
+                                } else if ($form.data('submitted') !== true) {
                                     $form.data('submitted', true);
                                     document.getElementById("loginForm").submit();
+                                } else {
+                                    console.warn("Prevented a possible double submit event.");
                                 }
+                            },
+                            error: function(error){
+                               // Allow re-submitting on error.
+                                $form.data('submitted', false);
                             },
                             cache: false
                         });
