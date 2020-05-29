@@ -71,10 +71,6 @@
                                     console.warn("Prevented a possible double submit event.");
                                 }
                             },
-                            error: function(error){
-                               // Allow re-submitting on error.
-                                $form.data('submitted', false);
-                            },
                             cache: false
                         });
                     }
