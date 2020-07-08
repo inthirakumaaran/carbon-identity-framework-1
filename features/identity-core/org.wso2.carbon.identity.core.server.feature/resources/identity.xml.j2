@@ -1676,4 +1676,11 @@
         <ClientCertificateHeader>{{oauth.mutualtls.client_certificate_header}}</ClientCertificateHeader>
     </MutualTLS>
 
+    <!--Disallowed characters regEx property-->
+    {% if user_identifier.disallowed_characters is defined %}
+        <UserIdentifier>
+            <DisallowedCharacters>{{user_identifier.disallowed.characters.regex}}</DisallowedCharacters>
+        </UserIdentifier>
+    {% endif %}
+
 </Server>
