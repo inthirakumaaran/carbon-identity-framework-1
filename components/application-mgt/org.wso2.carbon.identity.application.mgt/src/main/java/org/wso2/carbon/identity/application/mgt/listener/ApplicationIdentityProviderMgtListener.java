@@ -49,8 +49,9 @@ public class ApplicationIdentityProviderMgtListener extends AbstractIdentityProv
 
         try {
 
-            /* Retrieving the applications that have configured with federated authenticators and provisioning with the IDP we are going to update.
-             */
+            // Retrieving the applications that have configured with federated authenticators and provisioning with
+            // the IDP we are going to update.
+
             IdentityServiceProviderCache.getInstance().clear();
             IdentityProviderManager identityProviderManager = IdentityProviderManager.getInstance();
             List<String> connectedApplications =
