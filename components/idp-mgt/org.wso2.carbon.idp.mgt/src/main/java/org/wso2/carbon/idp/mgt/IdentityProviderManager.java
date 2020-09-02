@@ -2104,7 +2104,7 @@ public class IdentityProviderManager implements IdpManager {
             throws IdentityProviderManagementException {
 
         if (log.isDebugEnabled()) {
-            log.debug("Retrieving connected apps for IDP:" + idpName + " of tenantDomain:" + tenantDomain);
+            log.debug("Retrieving connected apps for IDP: " + idpName + " of tenantDomain: " + tenantDomain);
         }
         int tenantId = IdentityTenantUtil.getTenantId(tenantDomain);
 
