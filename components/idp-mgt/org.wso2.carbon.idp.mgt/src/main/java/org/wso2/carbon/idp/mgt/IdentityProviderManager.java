@@ -2099,4 +2099,15 @@ public class IdentityProviderManager implements IdpManager {
         roleConfiguration.setRoleMappings(validRoleMappings.toArray(new RoleMapping[0]));
         roleConfiguration.setIdpRoles(validIdPRoles.toArray(new String[0]));
     }
+
+    public List<String> getConnectedApplications(String idpName, String tenantDomain)
+            throws IdentityProviderManagementException {
+
+        if (log.isDebugEnabled()) {
+            log.debug("Retrieving connected apps for IDP: " + idpName + " of tenantDomain: " + tenantDomain);
+        }
+        int tenantId = IdentityTenantUtil.getTenantId(tenantDomain);
+
+        return dao.getConnectedApplications(idpName, tenantId);
+    }
 }
