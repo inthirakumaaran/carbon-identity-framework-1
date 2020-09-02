@@ -579,4 +579,9 @@ public class CacheBackedIdPMgtDAO {
         return idPMgtDAO.isIdPAvailableForAuthenticatorProperty(authenticatorName, propertyName, idPEntityId, tenantId);
     }
 
+    public List<String> getConnectedApplications(String idpName, int tenantId)
+            throws IdentityProviderManagementException {
+
+        return idPMgtDAO.getConnectedApplications(idpName, tenantId);
+    }
 }

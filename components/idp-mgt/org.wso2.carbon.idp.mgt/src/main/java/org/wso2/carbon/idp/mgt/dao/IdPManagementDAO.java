@@ -3151,4 +3151,45 @@ public class IdPManagementDAO {
         }
         return propertiesFromConnectors;
     }
+
+    /**
+     * Get list of applications that are connected to the identity provider from DB.
+     *
+     * @param idpName  IDP name.
+     * @param tenantId tenant id.
+     * @return List of application names.
+     * @throws IdentityProviderManagementException
+     */
+    public List<String> getConnectedApplications(String idpName, int tenantId)
+            throws IdentityProviderManagementException {
+
+        List<String> connectedApps = new ArrayList<>();
+        try (Connection connection = IdentityDatabaseUtil.getDBConnection()) {
+            try (PreparedStatement prepStmt = createConnectedAppsSqlStatement(connection, idpName, tenantId)) {
+                try (ResultSet resultSet = prepStmt.executeQuery()) {
+                    while (resultSet.next()) {
+                        connectedApps.add(resultSet.getString("APP_NAME"));
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            String message = "Error occurred during retrieving connected applications of IDP: " + idpName;
+            log.error(message, e);
+            throw new IdentityProviderManagementException(message, e);
+        }
+        return connectedApps;
+    }
+
+    private PreparedStatement createConnectedAppsSqlStatement(Connection connection, String idpName, int tenantId)
+            throws SQLException {
+
+        String sqlQuery = IdPManagementConstants.SQLQueries.GET_CONNECTED_APPS;
+        PreparedStatement prepStmt = connection.prepareStatement(sqlQuery);
+        prepStmt.setString(1, idpName);
+        prepStmt.setInt(2, tenantId);
+        prepStmt.setString(3, idpName);
+        prepStmt.setInt(4, tenantId);
+        return prepStmt;
+    }
 }
