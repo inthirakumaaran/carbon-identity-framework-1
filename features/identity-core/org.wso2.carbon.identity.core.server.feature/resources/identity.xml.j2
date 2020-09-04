@@ -1241,7 +1241,7 @@
     <ResourceAccessControl default-access="deny">
     {% endif %}
         {% for resource in resource.access_control %}
-        <Resource context="{{resource.context}}" secured="{{resource.secure}}" http-method="{{resource.http_method}}">
+        <Resource context="{{resource.context}}" secured="{{resource.secure}}" {% if resource.allowed_auth_handlers is defined %} allowed-auth-handlers="{{resource.allowed_auth_handlers|join(', ')}}" {% endif %} http-method="{{resource.http_method}}">
             {% for permission in resource.permissions %}
             <Permissions>{{permission}}</Permissions>
             {% endfor %}
