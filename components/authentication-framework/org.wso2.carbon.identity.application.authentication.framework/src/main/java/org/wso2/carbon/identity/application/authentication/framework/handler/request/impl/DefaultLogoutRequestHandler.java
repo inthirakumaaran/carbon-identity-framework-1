@@ -87,6 +87,7 @@ public class DefaultLogoutRequestHandler implements LogoutRequestHandler {
         SequenceConfig sequenceConfig = context.getSequenceConfig();
         ExternalIdPConfig externalIdPConfig = null;
 
+        // Remove the session related information from the session tables.
         clearUserSessionData(request);
 
         if (FrameworkServiceDataHolder.getInstance().getAuthnDataPublisherProxy() != null &&
@@ -270,20 +271,19 @@ public class DefaultLogoutRequestHandler implements LogoutRequestHandler {
 
     private void clearUserSessionData(HttpServletRequest request) {
 
+        if (!FrameworkServiceDataHolder.getInstance().isUserSessionMappingEnabled()) {
+            return;
+        }
         if (FrameworkUtils.getAuthCookie(request) != null) {
-
             String commonAuthCookie = FrameworkUtils.getAuthCookie(request).getValue();
             String sessionId = null;
-
             if (commonAuthCookie != null) {
                 sessionId = DigestUtils.sha256Hex(commonAuthCookie);
             }
             if (sessionId != null) {
                 List<String> terminatedSessionId = new ArrayList<>();
                 terminatedSessionId.add(sessionId);
-                if (FrameworkServiceDataHolder.getInstance().isUserSessionMappingEnabled()) {
-                    UserSessionStore.getInstance().removeTerminatedSessionRecords(terminatedSessionId);
-                }
+                UserSessionStore.getInstance().removeTerminatedSessionRecords(terminatedSessionId);
             }
         }
     }
