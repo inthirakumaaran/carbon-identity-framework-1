@@ -306,6 +306,7 @@ public abstract class FrameworkConstants {
         public static final String SESSION_CREATE = "sessionCreated";
         public static final String SESSION_UPDATE = "sessionUpdated";
         public static final String SESSION_TERMINATE = "sessionTerminated";
+        public static final String ACTIVE_SESSION_COUNT = "activeSessionCount";
     }
 
     public static class JSAttributes {
