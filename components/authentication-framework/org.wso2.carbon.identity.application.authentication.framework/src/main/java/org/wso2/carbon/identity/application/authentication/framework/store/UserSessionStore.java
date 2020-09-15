@@ -678,9 +678,6 @@ public class UserSessionStore {
                         isExisting = true;
                     }
                 }
-            } catch (SQLException ex) {
-                throw new UserSessionException("Error while retrieving existing mapping between user : " + user
-                        .getUserName() + " and session Id: " + sessionId + ".", ex);
             }
         } catch (SQLException e) {
             throw new UserSessionException("Error while retrieving existing mapping between user : " + user

@@ -270,6 +270,12 @@ public class DefaultLogoutRequestHandler implements LogoutRequestHandler {
         return null;
     }
 
+    /**
+     * Clear the user session information related to the given logout request if the user session management feature
+     * is enabled.
+     *
+     * @param request logout request
+     */
     private void clearUserSessionData(HttpServletRequest request) {
 
         if (!FrameworkServiceDataHolder.getInstance().isUserSessionMappingEnabled()) {
