@@ -878,6 +878,14 @@
                        orderId="9" enable="false"/>
     </EventListeners>
 
+    <Analytics>
+        <!-- By default, the identity server publishes session data to the stream
+        org.wso2.is.analytics.stream.OverallSession:1.0.0.
+        When this configuration is enabled, the stream definition org.wso2.is.analytics.stream.OverallSession:1.0.1
+        is used and the current active session count of the identity server will be added as an attribute. -->
+        <PublishActiveSessionCount>false</PublishActiveSessionCount>
+    </Analytics>
+
     <!-- These recorders are used to write user delete information to specific sources. Default event recorder is CSV
      file recorder. This recorder is disabled by default. Enable it by setting enable="true". To run these recorders,
      EventListener "rg.wso2.carbon.user.mgt.listeners.UserDeletionEventListener" also should be enabled. Which is
