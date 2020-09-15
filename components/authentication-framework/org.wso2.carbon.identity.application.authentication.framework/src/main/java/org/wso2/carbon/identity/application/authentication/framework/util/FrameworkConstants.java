@@ -221,6 +221,11 @@ public abstract class FrameworkConstants {
         public static final String USER_SESSION_MAPPING_ENABLED =
                 "JDBCPersistenceManager.SessionDataPersist.UserSessionMapping.Enable";
 
+        /**
+         * Configuration to enable publishing the active session count in analytics event.
+         */
+        public static final String PUBLISH_ACTIVE_SESSION_COUNT = "Analytics.PublishActiveSessionCount";
+
         private Config() {
         }
 

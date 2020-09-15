@@ -717,6 +717,7 @@ public class UserSessionStore {
                         activeSessionCount = resultSet.getInt(1);
                     }
                 }
+                IdentityDatabaseUtil.commitTransaction(connection);
             } catch (SQLException ex) {
                 throw new UserSessionException("Error while retrieving active session count of the tenant domain, " +
                         tenantDomain, ex);
@@ -725,7 +726,6 @@ public class UserSessionStore {
             throw new UserSessionException("Error while retrieving active session count of the tenant domain, " +
                     tenantDomain, e);
         }
-
         return activeSessionCount;
     }
 }

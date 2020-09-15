@@ -1679,21 +1679,20 @@ public class FrameworkUtils {
 
         AuthenticationDataPublisher authnDataPublisherProxy = FrameworkServiceDataHolder.getInstance()
                 .getAuthnDataPublisherProxy();
-        int activeSessionCount = -1;
-        try {
-            if (FrameworkServiceDataHolder.getInstance().isUserSessionMappingEnabled()) {
-                activeSessionCount = UserSessionStore.getInstance().getActiveSessionCount(user.getTenantDomain());
-            }
-        } catch (UserSessionException e) {
-            log.error("An error occurred while retrieving the active session count. Therefore the active session " +
-                    "count is set to -1 in the analytics event.");
-        }
+
         if (authnDataPublisherProxy != null && authnDataPublisherProxy.isEnabled(context)) {
             Map<String, Object> paramMap = new HashMap<>();
             paramMap.put(FrameworkConstants.AnalyticsAttributes.USER, user);
             paramMap.put(FrameworkConstants.AnalyticsAttributes.SESSION_ID, sessionId);
-            paramMap.put(FrameworkConstants.AnalyticsAttributes.ACTIVE_SESSION_COUNT, activeSessionCount);
 
+            String isPublishingSessionCountEnabledValue = (IdentityUtil.getProperty(FrameworkConstants.Config
+                    .PUBLISH_ACTIVE_SESSION_COUNT));
+            boolean isPublishingSessionCountEnabled = Boolean.parseBoolean(isPublishingSessionCountEnabledValue);
+
+            if (isPublishingSessionCountEnabled) {
+                paramMap.put(FrameworkConstants.AnalyticsAttributes.ACTIVE_SESSION_COUNT, getActiveSessionCount(user
+                        .getTenantDomain()));
+            }
             Map<String, Object> unmodifiableParamMap = Collections.unmodifiableMap(paramMap);
             if (FrameworkConstants.AnalyticsAttributes.SESSION_CREATE.equalsIgnoreCase(status)) {
                 authnDataPublisherProxy.publishSessionCreation(request, context, sessionContext,
@@ -1706,6 +1705,21 @@ public class FrameworkUtils {
                         unmodifiableParamMap);
             }
         }
+    }
+
+    private static int getActiveSessionCount(String tenantDomain) {
+
+        int activeSessionCount = 0;
+        try {
+            if (FrameworkServiceDataHolder.getInstance().isUserSessionMappingEnabled()) {
+                activeSessionCount = UserSessionStore.getInstance().getActiveSessionCount(tenantDomain);
+            }
+        } catch (UserSessionException e) {
+            activeSessionCount = -1;
+            log.error("An error occurred while retrieving the active session count. Therefore the active session " +
+                    "count is set to -1 in the analytics event.");
+        }
+        return activeSessionCount;
     }
 
     private static void updateCookieConfig(CookieBuilder cookieBuilder, IdentityCookieConfig

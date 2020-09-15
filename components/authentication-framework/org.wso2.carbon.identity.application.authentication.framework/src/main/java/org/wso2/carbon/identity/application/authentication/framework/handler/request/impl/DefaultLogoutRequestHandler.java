@@ -50,6 +50,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -274,11 +275,12 @@ public class DefaultLogoutRequestHandler implements LogoutRequestHandler {
         if (!FrameworkServiceDataHolder.getInstance().isUserSessionMappingEnabled()) {
             return;
         }
-        if (FrameworkUtils.getAuthCookie(request) != null) {
-            String commonAuthCookie = FrameworkUtils.getAuthCookie(request).getValue();
+        Cookie commonAuthCookie = FrameworkUtils.getAuthCookie(request);
+        if (commonAuthCookie != null) {
+            String commonAuthCookieValue = commonAuthCookie.getValue();
             String sessionId = null;
-            if (commonAuthCookie != null) {
-                sessionId = DigestUtils.sha256Hex(commonAuthCookie);
+            if (commonAuthCookieValue != null) {
+                sessionId = DigestUtils.sha256Hex(commonAuthCookieValue);
             }
             if (sessionId != null) {
                 List<String> terminatedSessionId = new ArrayList<>();
