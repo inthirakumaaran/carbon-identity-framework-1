@@ -326,6 +326,7 @@ public class DefaultAuthenticationRequestHandler implements AuthenticationReques
             SessionContext sessionContext = null;
             String commonAuthCookie = null;
             String sessionContextKey = null;
+            String analyticsSessionAction = null;
             // Force authentication requires the creation of a new session. Therefore skip using the existing session
             if (FrameworkUtils.getAuthCookie(request) != null && !context.isForceAuthenticate()) {
 
@@ -340,6 +341,7 @@ public class DefaultAuthenticationRequestHandler implements AuthenticationReques
             String applicationTenantDomain = getApplicationTenantDomain(context);
             // session context may be null when cache expires therefore creating new cookie as well.
             if (sessionContext != null) {
+                analyticsSessionAction = FrameworkConstants.AnalyticsAttributes.SESSION_UPDATE;
                 sessionContext.getAuthenticatedSequences().put(appConfig.getApplicationName(),
                         sequenceConfig);
                 sessionContext.getAuthenticatedIdPs().putAll(context.getCurrentAuthenticatedIdPs());
@@ -412,10 +414,8 @@ public class DefaultAuthenticationRequestHandler implements AuthenticationReques
                 // TODO add to cache?
                 // store again. when replicate  cache is used. this may be needed.
                 FrameworkUtils.addSessionContextToCache(sessionContextKey, sessionContext, applicationTenantDomain);
-                FrameworkUtils.publishSessionEvent(sessionContextKey, request, context, sessionContext, sequenceConfig
-                        .getAuthenticatedUser(), FrameworkConstants.AnalyticsAttributes.SESSION_UPDATE);
-
             } else {
+                analyticsSessionAction = FrameworkConstants.AnalyticsAttributes.SESSION_CREATE;
                 sessionContext = new SessionContext();
                 // To identify first login
                 context.setProperty(FrameworkConstants.AnalyticsAttributes.IS_INITIAL_LOGIN, true);
@@ -446,9 +446,6 @@ public class DefaultAuthenticationRequestHandler implements AuthenticationReques
 
                 FrameworkUtils.addSessionContextToCache(sessionContextKey, sessionContext, applicationTenantDomain);
                 setAuthCookie(request, response, context, sessionKey, applicationTenantDomain);
-                FrameworkUtils.publishSessionEvent(sessionContextKey, request, context, sessionContext, sequenceConfig
-                        .getAuthenticatedUser(), FrameworkConstants.AnalyticsAttributes.SESSION_CREATE);
-
                 if (FrameworkServiceDataHolder.getInstance().isUserSessionMappingEnabled()) {
                     try {
                         storeSessionMetaData(sessionContextKey, request);
@@ -461,7 +458,6 @@ public class DefaultAuthenticationRequestHandler implements AuthenticationReques
             if (authenticatedUserTenantDomain == null) {
                 PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
             }
-            publishAuthenticationSuccess(request, context, sequenceConfig.getAuthenticatedUser());
 
             if (FrameworkServiceDataHolder.getInstance().isUserSessionMappingEnabled()) {
                 try {
@@ -471,6 +467,9 @@ public class DefaultAuthenticationRequestHandler implements AuthenticationReques
                             "the database", e);
                 }
             }
+            FrameworkUtils.publishSessionEvent(sessionContextKey, request, context, sessionContext, sequenceConfig
+                        .getAuthenticatedUser(), analyticsSessionAction);
+            publishAuthenticationSuccess(request, context, sequenceConfig.getAuthenticatedUser());
         }
 
         // Checking weather inbound protocol is an already cache removed one, request come from federated or other

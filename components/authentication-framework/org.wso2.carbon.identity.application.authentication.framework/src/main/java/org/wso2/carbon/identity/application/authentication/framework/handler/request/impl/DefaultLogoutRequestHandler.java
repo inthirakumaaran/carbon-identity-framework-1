@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.identity.application.authentication.framework.handler.request.impl;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.CarbonConstants;
@@ -39,13 +40,17 @@ import org.wso2.carbon.identity.application.authentication.framework.internal.Fr
 import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticatedUser;
 import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticationResult;
 import org.wso2.carbon.identity.application.authentication.framework.model.CommonAuthResponseWrapper;
+import org.wso2.carbon.identity.application.authentication.framework.store.UserSessionStore;
 import org.wso2.carbon.identity.application.authentication.framework.util.FrameworkConstants;
 import org.wso2.carbon.identity.application.authentication.framework.util.FrameworkUtils;
 import org.wso2.carbon.idp.mgt.IdentityProviderManagementException;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -82,6 +87,10 @@ public class DefaultLogoutRequestHandler implements LogoutRequestHandler {
         }
         SequenceConfig sequenceConfig = context.getSequenceConfig();
         ExternalIdPConfig externalIdPConfig = null;
+
+        // Remove the session related information from the session tables.
+        clearUserSessionData(request);
+
         if (FrameworkServiceDataHolder.getInstance().getAuthnDataPublisherProxy() != null &&
                 FrameworkServiceDataHolder.getInstance().getAuthnDataPublisherProxy().isEnabled(context)) {
             // Retrieve session information from cache in order to publish event
@@ -259,5 +268,31 @@ public class DefaultLogoutRequestHandler implements LogoutRequestHandler {
             }
         }
         return null;
+    }
+
+    /**
+     * Clear the user session information related to the given logout request if the user session management feature
+     * is enabled.
+     *
+     * @param request logout request
+     */
+    private void clearUserSessionData(HttpServletRequest request) {
+
+        if (!FrameworkServiceDataHolder.getInstance().isUserSessionMappingEnabled()) {
+            return;
+        }
+        Cookie commonAuthCookie = FrameworkUtils.getAuthCookie(request);
+        if (commonAuthCookie != null) {
+            String commonAuthCookieValue = commonAuthCookie.getValue();
+            String sessionId = null;
+            if (commonAuthCookieValue != null) {
+                sessionId = DigestUtils.sha256Hex(commonAuthCookieValue);
+            }
+            if (sessionId != null) {
+                List<String> terminatedSessionId = new ArrayList<>();
+                terminatedSessionId.add(sessionId);
+                UserSessionStore.getInstance().removeTerminatedSessionRecords(terminatedSessionId);
+            }
+        }
     }
 }

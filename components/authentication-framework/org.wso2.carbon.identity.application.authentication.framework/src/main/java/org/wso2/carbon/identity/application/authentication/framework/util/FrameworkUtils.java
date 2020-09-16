@@ -57,6 +57,7 @@ import org.wso2.carbon.identity.application.authentication.framework.config.mode
 import org.wso2.carbon.identity.application.authentication.framework.context.AuthenticationContext;
 import org.wso2.carbon.identity.application.authentication.framework.context.SessionContext;
 import org.wso2.carbon.identity.application.authentication.framework.exception.FrameworkException;
+import org.wso2.carbon.identity.application.authentication.framework.exception.UserSessionException;
 import org.wso2.carbon.identity.application.authentication.framework.handler.claims.ClaimHandler;
 import org.wso2.carbon.identity.application.authentication.framework.handler.claims.impl.DefaultClaimHandler;
 import org.wso2.carbon.identity.application.authentication.framework.handler.hrd.HomeRealmDiscoverer;
@@ -83,6 +84,7 @@ import org.wso2.carbon.identity.application.authentication.framework.model.Authe
 import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticationFrameworkWrapper;
 import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticationRequest;
 import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticationResult;
+import org.wso2.carbon.identity.application.authentication.framework.store.UserSessionStore;
 import org.wso2.carbon.identity.application.common.model.Claim;
 import org.wso2.carbon.identity.application.common.model.ClaimMapping;
 import org.wso2.carbon.identity.application.common.model.FederatedAuthenticatorConfig;
@@ -1674,12 +1676,23 @@ public class FrameworkUtils {
 
     public static void publishSessionEvent(String sessionId, HttpServletRequest request, AuthenticationContext
             context, SessionContext sessionContext, AuthenticatedUser user, String status) {
+
         AuthenticationDataPublisher authnDataPublisherProxy = FrameworkServiceDataHolder.getInstance()
                 .getAuthnDataPublisherProxy();
+
         if (authnDataPublisherProxy != null && authnDataPublisherProxy.isEnabled(context)) {
             Map<String, Object> paramMap = new HashMap<>();
             paramMap.put(FrameworkConstants.AnalyticsAttributes.USER, user);
             paramMap.put(FrameworkConstants.AnalyticsAttributes.SESSION_ID, sessionId);
+
+            String isPublishingSessionCountEnabledValue = (IdentityUtil.getProperty(FrameworkConstants.Config
+                    .PUBLISH_ACTIVE_SESSION_COUNT));
+            boolean isPublishingSessionCountEnabled = Boolean.parseBoolean(isPublishingSessionCountEnabledValue);
+
+            if (isPublishingSessionCountEnabled) {
+                paramMap.put(FrameworkConstants.AnalyticsAttributes.ACTIVE_SESSION_COUNT, getActiveSessionCount(user
+                        .getTenantDomain()));
+            }
             Map<String, Object> unmodifiableParamMap = Collections.unmodifiableMap(paramMap);
             if (FrameworkConstants.AnalyticsAttributes.SESSION_CREATE.equalsIgnoreCase(status)) {
                 authnDataPublisherProxy.publishSessionCreation(request, context, sessionContext,
@@ -1692,6 +1705,21 @@ public class FrameworkUtils {
                         unmodifiableParamMap);
             }
         }
+    }
+
+    private static int getActiveSessionCount(String tenantDomain) {
+
+        int activeSessionCount = 0;
+        try {
+            if (FrameworkServiceDataHolder.getInstance().isUserSessionMappingEnabled()) {
+                activeSessionCount = UserSessionStore.getInstance().getActiveSessionCount(tenantDomain);
+            }
+        } catch (UserSessionException e) {
+            activeSessionCount = -1;
+            log.error("An error occurred while retrieving the active session count. Therefore the active session " +
+                    "count is set to -1 in the analytics event.");
+        }
+        return activeSessionCount;
     }
 
     private static void updateCookieConfig(CookieBuilder cookieBuilder, IdentityCookieConfig
