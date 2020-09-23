@@ -759,6 +759,7 @@
     <SelfRegistration>
         <Enable>false</Enable>
         <LockOnCreation>true</LockOnCreation>
+        <SendAccountUnlockNotification>true</SendAccountUnlockNotification>
         <Notification>
             <InternallyManage>true</InternallyManage>
         </Notification>
