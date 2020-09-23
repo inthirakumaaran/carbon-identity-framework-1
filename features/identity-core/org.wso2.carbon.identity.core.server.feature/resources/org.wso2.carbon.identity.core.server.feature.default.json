@@ -260,7 +260,7 @@
 
   "identity_mgt.user_self_registration.allow_self_registration": false,
   "identity_mgt.user_self_registration.lock_on_creation": true,
-  "identity_mgt.user_self_registration.send_account_unlock_notification": true,
+  "identity_mgt.user_self_registration.notify_unlock_state": true,
   "identity_mgt.user_self_registration.enable_recaptcha": true,
   "identity_mgt.user_self_registration.verification_email_validity": "$ref{identity_mgt.default_mail_validity_period}",
   "identity_mgt.user_self_registration.callback_url": "${carbon.protocol}://${carbon.host}:${carbon.management.port}/authenticationendpoint/login.do",
