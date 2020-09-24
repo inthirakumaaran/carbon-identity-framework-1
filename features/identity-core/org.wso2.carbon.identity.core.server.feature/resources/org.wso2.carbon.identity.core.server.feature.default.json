@@ -456,5 +456,6 @@
   ],
 
   "user_filtering.show_display_name_of_user": true,
-  "analytics.publish_active_session_count" : false
+  "analytics.publish_active_session_count" : false,
+  "oauth.enable_jwt_token_validation_during_introspection": false
 }
