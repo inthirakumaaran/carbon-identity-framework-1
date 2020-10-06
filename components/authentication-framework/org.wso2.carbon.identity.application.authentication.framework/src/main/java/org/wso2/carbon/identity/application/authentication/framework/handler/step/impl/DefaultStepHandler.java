@@ -434,17 +434,18 @@ public class DefaultStepHandler implements StepHandler {
         for (AuthenticatorConfig authenticatorConfig : stepConfig.getAuthenticatorList()) {
             ApplicationAuthenticator authenticator = authenticatorConfig
                     .getApplicationAuthenticator();
-            // TODO [IMPORTANT] validate the authenticator is inside the step.
             if (authenticator != null && authenticator.getName().equalsIgnoreCase(
                     request.getParameter(FrameworkConstants.RequestParams.AUTHENTICATOR))) {
+                if (StringUtils.isNotBlank(selectedIdp) && authenticatorConfig.getIdps().get(selectedIdp) == null) {
+                    // If the selected idp name is not configured for the application, throw error since
+                    // this is an invalid case.
+                    throw new FrameworkException("Authenticators configured for application and user selected idp " +
+                            "does not match. Possible tampering of parameters in login page.");
+                }
                 doAuthentication(request, response, context, authenticatorConfig);
                 return;
             }
         }
-
-        // TODO handle idp null
-
-        // TODO handle authenticator name unmatching
     }
 
     protected void handleResponse(HttpServletRequest request, HttpServletResponse response,
