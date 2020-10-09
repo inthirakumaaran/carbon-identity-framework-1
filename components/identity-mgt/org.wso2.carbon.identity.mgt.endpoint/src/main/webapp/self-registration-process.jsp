@@ -69,6 +69,7 @@
     <!-- header -->
     <%
         File headerFile = new File(getServletContext().getRealPath("extensions/header.jsp"));
+        System.out.println("In here =========3");
         if (headerFile.exists()) {
     %>
             <jsp:include page="extensions/header.jsp"/>
@@ -141,7 +142,7 @@
             List<Claim> claimsList;
             UsernameRecoveryApi usernameRecoveryApi = new UsernameRecoveryApi();
             try {
-                claimsList = usernameRecoveryApi.claimsGet(null);
+                claimsList = usernameRecoveryApi.claimsGet(user.getTenantDomain());
                 if (claimsList != null) {
                     claims = claimsList.toArray(new Claim[claimsList.size()]);
                 }

@@ -40,6 +40,7 @@ import org.wso2.carbon.base.MultitenantConstants;
 import org.wso2.carbon.identity.mgt.endpoint.IdentityManagementEndpointConstants;
 import org.wso2.carbon.identity.mgt.endpoint.IdentityManagementEndpointUtil;
 import org.wso2.carbon.identity.mgt.endpoint.IdentityManagementServiceUtil;
+import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -156,10 +157,13 @@ public class SelfRegistrationMgtClient {
         return purposesEndpoint;
     }
 
-    private String getUserAPIEndpoint() {
+    private String getUserAPIEndpoint(String tenantDomain) {
 
-        String purposesEndpoint = IdentityManagementEndpointUtil.buildEndpointUrl(USERNAME_VALIDATE_API_RELATIVE_PATH);
-        return purposesEndpoint;
+        if (!MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equalsIgnoreCase(tenantDomain)) {
+            return IdentityManagementEndpointUtil.buildEndpointUrl("t/" + tenantDomain +
+                    USERNAME_VALIDATE_API_RELATIVE_PATH);
+        }
+        return IdentityManagementEndpointUtil.buildEndpointUrl(USERNAME_VALIDATE_API_RELATIVE_PATH);
     }
 
     private String executeGet(String url) throws SelfRegistrationMgtClientException, IOException {
@@ -234,7 +238,8 @@ public class SelfRegistrationMgtClient {
             properties.put(property);
             user.put(PROPERTIES, properties);
 
-            HttpPost post = new HttpPost(getUserAPIEndpoint());
+            String tenantDomain = MultitenantUtils.getTenantDomain(username);
+            HttpPost post = new HttpPost(getUserAPIEndpoint(tenantDomain));
             setAuthorizationHeader(post);
 
             post.setEntity(new StringEntity(user.toString(), ContentType.create(HTTPConstants
