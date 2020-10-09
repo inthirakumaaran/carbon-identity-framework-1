@@ -69,7 +69,6 @@
     <!-- header -->
     <%
         File headerFile = new File(getServletContext().getRealPath("extensions/header.jsp"));
-        System.out.println("In here =========3");
         if (headerFile.exists()) {
     %>
             <jsp:include page="extensions/header.jsp"/>
