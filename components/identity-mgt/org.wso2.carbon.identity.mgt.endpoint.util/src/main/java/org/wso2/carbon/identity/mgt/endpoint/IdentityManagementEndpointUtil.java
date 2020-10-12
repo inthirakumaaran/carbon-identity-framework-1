@@ -575,4 +575,15 @@ public class IdentityManagementEndpointUtil {
             return buildUnexpectedRetryError();
         }
     }
+
+    /**
+     * Get configurations from the identity.xml.
+     *
+     * @param key Configuration key.
+     * @return Boolean value of the configuration.
+     */
+    public static boolean getConfiguration(String key) {
+
+        return Boolean.parseBoolean(IdentityUtil.getProperty(key));
+    }
 }

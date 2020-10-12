@@ -159,6 +159,12 @@ public class SelfRegistrationMgtClient {
 
     private String getUserAPIEndpoint(String tenantDomain) {
 
+
+        // Added to maintain backward compatibility.
+        if (!IdentityManagementEndpointUtil.getConfiguration(IdentityManagementEndpointConstants
+                .ENABLE_TENANT_QUALIFIED_VALIDATE_USERNAME_ENDPOINT)) {
+            return IdentityManagementEndpointUtil.buildEndpointUrl(USERNAME_VALIDATE_API_RELATIVE_PATH);
+        }
         if (!MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equalsIgnoreCase(tenantDomain)) {
             return IdentityManagementEndpointUtil.buildEndpointUrl("t/" + tenantDomain +
                     USERNAME_VALIDATE_API_RELATIVE_PATH);
