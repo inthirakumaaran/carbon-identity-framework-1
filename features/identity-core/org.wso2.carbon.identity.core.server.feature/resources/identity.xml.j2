@@ -1713,6 +1713,11 @@
 
     <SendEmailWithTenantConfigs>true</SendEmailWithTenantConfigs>
 
+    <EnableTenantQualifiedUrls>
+        <UsernameValidationEndpoint>{{tenant_context.enable_tenant_qualified_urls.username_validation_endpoint}}</UsernameValidationEndpoint>
+        <ClaimsEndpoint>{{tenant_context.enable_tenant_qualified_urls.claims_endpoint}}</ClaimsEndpoint>
+    </EnableTenantQualifiedUrls>
+
     <MutualTLS>
         <ClientCertificateHeader>{{oauth.mutualtls.client_certificate_header}}</ClientCertificateHeader>
     </MutualTLS>

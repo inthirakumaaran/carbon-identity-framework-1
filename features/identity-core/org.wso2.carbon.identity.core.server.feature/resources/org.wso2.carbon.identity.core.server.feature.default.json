@@ -457,6 +457,8 @@
   ],
 
   "user_filtering.show_display_name_of_user": true,
+  "tenant_context.enable_tenant_qualified_urls.username_validation_endpoint": false,
+  "tenant_context.enable_tenant_qualified_urls.claims_endpoint": false,
   "analytics.publish_active_session_count" : false,
   "oauth.enable_jwt_token_validation_during_introspection": false
 }
