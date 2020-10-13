@@ -141,7 +141,7 @@
             List<Claim> claimsList;
             UsernameRecoveryApi usernameRecoveryApi = new UsernameRecoveryApi();
             try {
-                // This is added to maintain backward compatibility
+                // This is added to maintain backward compatibility.
                 boolean isTenantQualifiedEndpointEnabled = IdentityManagementEndpointUtil.getConfiguration(
                     IdentityManagementEndpointConstants.ENABLE_TENANT_QUALIFIED_CLAIMS_ENDPOINT);
                 String resolvedTenant = null;
