@@ -18,6 +18,8 @@
 
 package org.wso2.carbon.identity.mgt.endpoint;
 
+import org.wso2.carbon.identity.core.util.IdentityUtil;
+
 /**
  * This class defines the constants used within this web app.
  */
@@ -111,6 +113,10 @@ public class IdentityManagementEndpointConstants {
     public static final String UTF_8 = "UTF-8";
 
     public static final String CALLBACK = "callback";
+
+    public static final String ENABLE_TENANT_QUALIFIED_VALIDATE_USERNAME_ENDPOINT =
+            "EnableTenantQualifiedUrls.UsernameValidationEndpoint";
+    public static final String ENABLE_TENANT_QUALIFIED_CLAIMS_ENDPOINT = "EnableTenantQualifiedUrls.ClaimsEndpoint";
 
     public static class Consent {
 
