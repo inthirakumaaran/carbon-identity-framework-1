@@ -18,7 +18,7 @@
     <parent>
         <artifactId>template-management-feature</artifactId>
         <groupId>org.wso2.carbon.identity.framework</groupId>
-        <version>5.14.97.1-SNAPSHOT</version>
+        <version>5.14.97.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -133,9 +133,9 @@
                         <phase>install</phase>
                         <configuration>
                             <tasks>
-                                <delete dir="src/main/resources"/>
-                                <delete dir="src/main"/>
-                                <delete dir="src"/>
+                                <delete dir="src/main/resources" />
+                                <delete dir="src/main" />
+                                <delete dir="src" />
                             </tasks>
                         </configuration>
                         <goals>
